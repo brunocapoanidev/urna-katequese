@@ -74,12 +74,12 @@ O eleitor de teste (`testOnly`) só funciona localmente; em produção o servido
 
 ## Regras de apuração
 
-Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os três mais votados, independente de aliança. Votos em branco são contados à parte e não elegem ninguém.
+Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os três mais votados, independente de aliança. Votos em branco e nulos (número que não existe, confirmado duas vezes) são contados à parte e não elegem ninguém.
 
 ## Pendências e pontos de atenção (para quem continuar)
 
 - **Textos de exemplo:** `slogan` e `proposals` dos presidentes ainda são `[Slogan da campanha]` / `[Proposta N]`. Os santinhos já trazem as propostas desenhadas, então dá para remover esses textos dos cartões ou preenchê-los.
-- **Fotos faltando:** o Kayo (deputado) ainda não tem foto. A foto do Tigas é um arquivo quadrado próprio (`tigas.jpg`, sem `photoPosition`). Defina `photo` e `photoPosition` em `data/deputies.json`. As fotos atuais são recortes de uma imagem com 3 painéis (`photoPosition` 0%, 50% ou 100%).
+- **Fotos:** Tigas e Kayo usam a imagem de dois painéis `tigas-kayo.png` (`photoPosition` 0% e 100%, `photoSize` "200% 100%"). Para trocar, edite `data/deputies.json`. Defina `photo` e `photoPosition` em `data/deputies.json`. As fotos atuais são recortes de uma imagem com 3 painéis (`photoPosition` 0%, 50% ou 100%).
 - **Eleitores:** `data/voters.json` tem os 4 eleitores de exemplo (e o eleitor de teste). **Troque os códigos** ou use `VOTERS_JSON`. Se alguém quiser votar só como eleitor, basta adicionar o nome e um código novo ali.
 - **Horário:** `data/election.json` só define o horário **inicial** (copiado para o Blobs no primeiro acesso, hoje sábado 24/10 às 15h até domingo 25/10 às 17h, horário de Brasília). Depois, quem manda é o painel `/admin`. Modos: `auto` (segue o horário), `open` e `closed` (decisão manual, vale acima do horário). A lógica está em `netlify/functions/_schedule.js` (testada em `tests/schedule.test.js`). A contagem usa o relógio do servidor, não o do celular.
 - **Listas no Blobs:** candidatos e eleitores são copiados para o Blobs no primeiro acesso. Depois disso, mudar `data/*.json` não muda a urna em produção (a tela inicial muda). Para alterar com a urna já em uso, use a ação `saveList` do `admin` com a votação **encerrada**, ou limpe os Blobs do site.

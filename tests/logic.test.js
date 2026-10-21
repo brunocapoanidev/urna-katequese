@@ -96,3 +96,13 @@ describe('empates sem votos', () => {
     expect(r.ties.deputies).toBe(false);
   });
 });
+
+describe('voto nulo', () => {
+  it('é contado à parte e não elege ninguém', () => {
+    const r = tally([vote('null', 'null'), vote('null', 'd1'), vote('a', 'null')], presidents, deputies);
+    expect(r.null).toEqual({ president: 2, deputy: 2 });
+    expect(r.votes).toBe(3);
+    expect(r.winner).toBe('a');
+    expect(r.elected).toEqual(['d1']);
+  });
+});
