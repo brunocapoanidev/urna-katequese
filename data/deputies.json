@@ -17,6 +17,13 @@
     "photoSize": "200% 100%"
   },
   {
+    "id": "anderson",
+    "name": "Anderson",
+    "number": "3869",
+    "presidentId": "pedro-galli",
+    "photo": "/candidates/anderson.jpg"
+  },
+  {
     "id": "gregory",
     "name": "Gregory",
     "number": "4569",

@@ -1,6 +1,7 @@
 import './landing.css';
 import CandidateCard from './CandidateCard.jsx';
 import PosterCarousel from './PosterCarousel.jsx';
+import PartyProposals from './PartyProposals.jsx';
 import Countdown from './Countdown.jsx';
 import { when, whenShort } from '../time.js';
 
@@ -72,7 +73,7 @@ export default function Landing({ presidents, deputies, config, skew = 0, onVote
                 {canVote ? 'Ir para a votação' : voteLabel}
                 {canVote && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
               </button>
-              <a href="#candidatos" className="lp-btn lp-btn-ghost">Ver propostas</a>
+              <a href="#propostas" className="lp-btn lp-btn-ghost">Ver propostas</a>
             </div>
           </div>
 
@@ -125,6 +126,8 @@ export default function Landing({ presidents, deputies, config, skew = 0, onVote
           </div>
         </section>
       )}
+
+      <PartyProposals presidents={ordered} deputies={deputies} />
 
       <section id="como-votar" className="lp-how">
         <div className="lp-wrap">

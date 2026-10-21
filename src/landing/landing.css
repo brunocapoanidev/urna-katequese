@@ -122,10 +122,6 @@
 .lp-card-head { display: flex; flex-direction: column; gap: 6px; }
 .lp-card-head h3 { font-size: 26px; font-weight: 900; font-stretch: 88%; line-height: 1.1; }
 .lp-slogan { font-size: 15px; font-style: italic; color: var(--ink-soft); }
-.lp-proposals { display: flex; flex-direction: column; gap: 12px; }
-.lp-proposals li { display: flex; gap: 10px; font-size: 15px; line-height: 1.45; }
-.lp-proposals svg { flex: none; margin-top: 2px; color: var(--ok); }
-
 .lp-ticket { border-top: 1px solid #e3ded2; padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .lp-ticket ul { display: flex; flex-direction: column; gap: 10px; }
 .lp-deputy { display: flex; align-items: center; gap: 12px; background: var(--paper); border-radius: 12px; padding: 8px 12px 8px 8px; }
@@ -160,6 +156,36 @@
 .lp-material { padding: 0 0 72px; }
 .lp-facts dl > .wide { grid-column: 1 / -1; }
 .lp-facts .wide dd { font-size: 22px; }
+
+/* propostas das chapas */
+.lp-platform { padding: 0 0 64px; }
+.lp-platform-shell { background: #fff; border: 1px solid #e3ded2; border-radius: 16px; padding: clamp(16px, 2.5vw, 28px); box-shadow: 0 10px 30px rgba(18, 33, 58, 0.1); }
+.lp-platform-head { display: flex; flex-direction: column; gap: 6px; max-width: 720px; }
+.lp-platform-head h2 { font-size: clamp(25px, 4vw, 32px); font-weight: 900; font-stretch: 90%; line-height: 1.05; }
+.lp-platform-head p { color: var(--ink-soft); font-size: 14px; }
+.lp-platform-grid { display: grid; gap: 16px; margin-top: 20px; }
+.lp-platform-card { overflow: hidden; border: 1px solid #e3ded2; border-radius: 14px; background: var(--paper); }
+.lp-platform-card-head { display: flex; flex-direction: column; gap: 5px; padding: 16px 18px 14px; background: var(--navy); color: var(--paper); }
+.lp-platform-card-head .lp-kicker { color: #b9c3d6; }
+.lp-platform-card-head h3 { font-size: 22px; font-weight: 900; line-height: 1.1; }
+.lp-platform-deputies { color: #c8d1e0; font-size: 13px; line-height: 1.35; }
+.lp-platform-slogan { color: #f7c51e; font-size: 12px; font-style: italic; line-height: 1.35; }
+.lp-platform-list { display: flex; flex-direction: column; padding: 2px 16px; }
+.lp-platform-item { display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: start; gap: 10px; min-width: 0; padding: 13px 0; border-bottom: 1px solid #ded9ce; }
+.lp-platform-item:last-child { border-bottom: 0; }
+.lp-platform-index { width: 28px; height: 28px; justify-self: center; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--accent); color: var(--navy); font-size: 12px; font-weight: 900; }
+.lp-platform-item > div { min-width: 0; }
+.lp-platform-item h4 { font-size: 15px; line-height: 1.25; font-weight: 900; }
+.lp-platform-item p { margin-top: 4px; color: var(--ink-soft); font-size: 13px; line-height: 1.45; }
+
+@media (min-width: 720px) {
+  .lp-platform-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+}
+
+@media (min-width: 960px) {
+  .lp-platform-item h4 { font-size: 16px; }
+  .lp-platform-item p { font-size: 13px; }
+}
 
 /* contagem regressiva */
 .lp-countdown { display: flex; flex-direction: column; gap: 8px; }

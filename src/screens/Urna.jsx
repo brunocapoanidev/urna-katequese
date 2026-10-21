@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api.js';
+import { findCandidateByNumber } from '../candidates.js';
 import { urnaSound } from '../sound.js';
 
 const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
@@ -19,7 +20,7 @@ export default function Urna({ token, data, onDone }) {
 
   const list = STAGES[stage].list(data);
   const maxLen = Math.max(...list.map(c => c.number.length));
-  const candidate = digits ? list.find(c => c.number === digits) : null;
+  const candidate = digits ? findCandidateByNumber(list, digits) : null;
   const ally = candidate?.presidentId && data.presidents.find(p => p.id === candidate.presidentId);
   const notFound = !blank && digits.length === maxLen && !candidate;
 

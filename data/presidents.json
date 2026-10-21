@@ -3,6 +3,29 @@
     "id": "bruno-capoani",
     "name": "Bruno Capoani",
     "number": "45",
+    "slogan": "Compromisso com a galera, resultado na prática.",
+    "proposals": [
+      {
+        "title": "Programa de Organização e Integração",
+        "text": "Facilitar a organização dos encontros e estabelecer um calendário de eventos para o grupo. A proposta é diminuir a enrolação, definir datas com antecedência e garantir que os compromissos assumidos sejam cumpridos."
+      },
+      {
+        "title": "Programa Novas Experiências",
+        "text": "Promover pelo menos uma atividade diferente por mês, incluindo viagens, festas, futebol e passeios. Os destinos e eventos serão escolhidos com a participação dos integrantes, priorizando opções que agradem à maioria."
+      },
+      {
+        "title": "Projeto Confraternização Garantida",
+        "text": "Garantir a organização de pelo menos um churrasco mensal, incentivando a participação de todos. Também será criado um sistema de apoio para facilitar a compra de carvão, alimentos e demais itens necessários."
+      },
+      {
+        "title": "Programa de Benefícios nos Eventos",
+        "text": "Disponibilizar cigarros Camel de diferentes versões durante as confraternizações, conforme a demanda dos participantes adultos, mediante organização e custeio previamente definidos."
+      },
+      {
+        "title": "Programa Mobilidade para Todos",
+        "text": "Organizar transporte para os integrantes participarem de festas, encontros e confraternizações, buscando alternativas gratuitas para os participantes sempre que possível. A distância não deve ser um obstáculo para reunir a galera."
+      }
+    ],
     "party": "PNK — Partido Nacional da Katequese",
     "photo": "/candidates/presidentes.png",
     "photoPosition": "0%",
@@ -37,6 +60,28 @@
     "id": "pedro-galli",
     "name": "Pedro Galli",
     "number": "38",
+    "proposals": [
+      {
+        "title": "Reforma Administrativa dos encontros",
+        "text": "Fim da burocracia para organizar encontros. Criação de um calendário oficial de festas. Tigas e anderson, como Deputado Grupal, fiscalizará o cumprimento das promessas e cobrará os membros que só aparecem quando tem comida."
+      },
+      {
+        "title": "Programa Rolê Aleatório",
+        "text": "Pelo menos uma aventura inesperada por mês. Viagens, futebol, festas e passeios decididos democraticamente. Seremos responsáveis por achar as melhores casas de show da região. Quem disser “vamos marcar” terá 48 horas para apresentar uma data."
+      },
+      {
+        "title": "Ministério do churrasco e da cerveja",
+        "text": "Pelo menos um churrasco por mês. Proibido marcar festas ou encontros e desmarcar por preguiça sem apresentar justificativa oficial. Criação do auxílio-carvão para eventos emergenciais."
+      },
+      {
+        "title": "Auxílio Camel",
+        "text": "Camel de diversos sabores garantidos às festas e encontros do grupo."
+      },
+      {
+        "title": "Projeto transporte",
+        "text": "Transportar membros do grupo aos encontros ou a festas sem custo, para que todo possa estar unido indiferente da distância."
+      }
+    ],
     "party": "PC — Partido Cuiudo",
     "photo": "/candidates/presidentes.png",
     "photoPosition": "50%",
