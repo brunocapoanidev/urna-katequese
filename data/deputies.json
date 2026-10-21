@@ -11,7 +11,10 @@
     "id": "tigas",
     "name": "Tigas",
     "number": "5138",
-    "presidentId": "pedro-galli"
+    "presidentId": "pedro-galli",
+    "photo": "/candidates/tigas-kayo.png",
+    "photoPosition": "0%",
+    "photoSize": "200% 100%"
   },
   {
     "id": "gregory",
@@ -25,7 +28,10 @@
     "id": "kayo",
     "name": "Kayo",
     "number": "1067",
-    "presidentId": "pietro-spielmann"
+    "presidentId": "pietro-spielmann",
+    "photo": "/candidates/tigas-kayo.png",
+    "photoPosition": "100%",
+    "photoSize": "200% 100%"
   },
   {
     "id": "diego",

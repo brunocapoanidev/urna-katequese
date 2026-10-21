@@ -31,7 +31,9 @@ export default function PreviewResults({ onBack }) {
       <h1>Resultado de teste</h1>
       <p className="lead">{votes.length} voto(s) de demonstração nesta aba.</p>
       <Ranking title="Presidente" list={presidents} votes={votes} field="president" />
+      <p className="note">Brancos: {votes.filter(v => v.president === 'blank').length} · Nulos: {votes.filter(v => v.president === 'null').length}</p>
       <Ranking title="Deputados" list={deputies} votes={votes} field="deputy" />
+      <p className="note">Brancos: {votes.filter(v => v.deputy === 'blank').length} · Nulos: {votes.filter(v => v.deputy === 'null').length}</p>
       <div className="row">
         <button type="button" className="btn btn-dark" onClick={onBack}>Voltar</button>
         <button type="button" className="btn btn-ghost" onClick={() => { clearPreviewVotes(); setVotes([]); }}>Limpar testes</button>
