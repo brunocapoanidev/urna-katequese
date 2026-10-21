@@ -29,5 +29,9 @@ export function tally(votes, presidents, deputies, seats = 3) {
       president: votes.filter(v => v.president === 'blank').length,
       deputy: votes.filter(v => v.deputy === 'blank').length,
     },
+    null: {
+      president: votes.filter(v => v.president === 'null').length,
+      deputy: votes.filter(v => v.deputy === 'null').length,
+    },
   };
 }

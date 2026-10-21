@@ -79,12 +79,12 @@ function Results({ r, names }) {
 
       <h3>Presidente</h3>
       {bars(r.presidents)}
-      <p className="note">Brancos: {r.blank.president}</p>
+      <p className="note">Brancos: {r.blank.president} · Nulos: {r.null?.president || 0}</p>
 
       <h3>Deputados <small>(3 mais votados são eleitos)</small></h3>
       {bars(r.deputies)}
       <p className="note">
-        Brancos: {r.blank.deputy}
+        Brancos: {r.blank.deputy} · Nulos: {r.null?.deputy || 0}
         {r.ties.deputies && ' · Empate na última vaga: venceu o menor número eleitoral.'}
       </p>
     </section>

@@ -12,6 +12,7 @@ export default function Urna({ token, data, onDone }) {
   const [stage, setStage] = useState('president');
   const [digits, setDigits] = useState('');
   const [blank, setBlank] = useState(false);
+  const [nullVote, setNullVote] = useState(false);
   const [error, setError] = useState('');
   const [president, setPresident] = useState(null);
   const [sending, setSending] = useState(false);
@@ -25,17 +26,23 @@ export default function Urna({ token, data, onDone }) {
   const reset = () => {
     setDigits('');
     setBlank(false);
+    setNullVote(false);
     setError('');
   };
   const press = n => {
     setBlank(false);
+    setNullVote(false);
     setError('');
     setDigits(d => (d.length < maxLen ? d + n : d));
   };
 
   async function confirm() {
     if (sending) return;
-    const pick = blank ? 'blank' : candidate?.id;
+    if (notFound && !nullVote) {
+      setNullVote(true);
+      return setError('VOTO NULO — pressione CONFIRMA novamente para confirmar.');
+    }
+    const pick = blank ? 'blank' : candidate?.id || (nullVote ? 'null' : null);
     if (!pick) return setError('Digite um número válido ou escolha BRANCO.');
 
     if (stage === 'president') {
@@ -86,7 +93,7 @@ export default function Urna({ token, data, onDone }) {
                   className="candidate-photo"
                   role="img"
                   aria-label={`Foto de ${candidate.name}`}
-                  style={{ backgroundImage: `url(${candidate.photo})`, backgroundPosition: `${candidate.photoPosition || '50%'} center` }}
+                  style={{ backgroundImage: `url(${candidate.photo})`, backgroundPosition: `${candidate.photoPosition || '50%'} center`, backgroundSize: candidate.photoSize || undefined }}
                 />
               )}
             </div>

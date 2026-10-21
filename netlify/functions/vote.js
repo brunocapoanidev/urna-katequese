@@ -1,6 +1,6 @@
 import { store, auth, data, json, bad, body, handler, digest, isDev } from './_lib.js';
 
-const isValid = (choice, list) => choice === 'blank' || list.some(x => x.id === choice);
+const isValid = (choice, list) => choice === 'blank' || choice === 'null' || list.some(x => x.id === choice);
 
 export default handler(async req => {
   const user = await auth(req, 'voter');
@@ -14,7 +14,6 @@ export default handler(async req => {
 
   if (user.testOnly && isDev()) return json({ ok: true, testOnly: true });
 
-  // 1) reserva a participação de forma atômica; 2) grava o voto sem identidade; 3) conclui.
   const claimKey = `participation/${await digest(user.voterId)}`;
   const voteId = crypto.randomUUID();
   const claim = { state: 'pending', voteId, createdAt: new Date().toISOString() };
@@ -27,8 +26,6 @@ export default handler(async req => {
       : bad('Seu voto está em processamento. Não envie novamente; contate a organização se a mensagem persistir.', 409);
   };
 
-  // Leitura antes da escrita barra repetições comuns; a escrita condicional (onlyIfNew) é o
-  // que garante a unicidade quando dois envios chegam ao mesmo tempo.
   const earlier = await alreadyClaimed();
   if (earlier) return earlier;
   const won = await store.setJSON(claimKey, claim, { onlyIfNew: true });
