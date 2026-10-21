@@ -87,3 +87,9 @@ Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os tr�
 - **Biblioteca de armazenamento:** `@netlify/blobs` precisa ser ≥ 10 (a 9.x não suportava a escrita condicional e o voto falhava com erro 500).
 - **Windows:** `npx netlify dev` usa `.netlify/` para os Blobs locais; o `vite.config.js` já o ignora para o Vite não cair com EBUSY.
 - **Limite de tentativas:** 8 erros de login em 10 minutos bloqueiam aquele nome por 10 minutos (inclusive com o código certo).
+
+## Publicação atual
+
+- Site: https://votacoes-katequese.netlify.app (painel: `/admin`). Publicado por `netlify deploy --build --prod` (Netlify CLI **≥ 27**; a 17 gera funções incompatíveis com a plataforma e devolve erro 502).
+- Variáveis `ADMIN_PASSWORD`, `AUTH_SECRET` e `VOTERS_JSON` já configuradas no Netlify. A visibilidade do projeto foi mudada para **Public** (o padrão de projetos novos é Private e bloqueia os eleitores com um pedido de login do Netlify).
+- Para republicar: `npx netlify login` (uma vez), `npx netlify link` (se necessário) e `npx netlify deploy --build --prod`. O repositório do GitHub **não** está ligado ao site: um `git push` sozinho não publica nada.
