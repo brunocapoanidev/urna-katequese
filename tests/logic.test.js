@@ -1,0 +1,1 @@
+import{describe,it,expect}from'vitest';describe('regras eleitorais',()=>{it('desempate usa menor número',()=>{let a=[{number:'45',votes:2},{number:'10',votes:2}].sort((x,y)=>y.votes-x.votes||x.number.localeCompare(y.number));expect(a[0].number).toBe('10')});it('branco é valor distinto',()=>expect('blank').not.toBe('candidate-1'))});

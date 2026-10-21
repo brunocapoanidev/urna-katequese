@@ -1,0 +1,1 @@
+import {data,json,bad} from './_lib.js'; export default async req=>{let d=await data(); if(req.method!=='GET')return bad('Método inválido',405); return json({config:{status:d.config.status},presidents:d.presidents,deputies:d.deputies})}

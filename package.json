@@ -1,0 +1,6 @@
+{
+  "name": "urna-katequese", "version": "1.0.0", "type": "module", "private": true,
+  "scripts": { "dev": "vite", "dev:netlify": "netlify dev", "build": "vite build", "test": "vitest run" },
+  "dependencies": { "@netlify/blobs": "^9.1.0", "@netlify/functions": "^2.8.2", "react": "^18.3.1", "react-dom": "^18.3.1" },
+  "devDependencies": { "netlify-cli": "^17.37.2", "@vitejs/plugin-react": "^4.3.4", "vite": "^5.4.10", "vitest": "^2.1.8" }
+}
