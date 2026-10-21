@@ -1,7 +1,7 @@
 import { store, data, json, bad, body, handler, attempts, digest, isDev, safeEqual, token, phase, fmt } from './_lib.js';
 import { ADMIN_TTL_MS } from './_crypto.js';
+import { findVoter, normName } from './_voters.js';
 
-const norm = s => String(s ?? '').trim().toLocaleLowerCase('pt-BR');
 const TOO_MANY = 'Muitas tentativas. Aguarde alguns minutos e tente de novo.';
 
 async function adminLogin(password) {
@@ -22,11 +22,11 @@ export default handler(async req => {
 
   if (adminPassword !== undefined) return adminLogin(adminPassword);
 
-  const limit = await attempts('voter', norm(name));
+  const limit = await attempts('voter', normName(name));
   if (limit.blocked) return bad(TOO_MANY, 429);
 
   const d = await data();
-  const voter = d.voters.find(v => norm(v.name) === norm(name) && safeEqual(v.code, String(code ?? '')));
+  const voter = findVoter(d.voters, name, code);
   // O eleitor de teste só existe no ambiente local; em produção ele não entra.
   if (!voter || (voter.testOnly && !isDev())) {
     await limit.fail();

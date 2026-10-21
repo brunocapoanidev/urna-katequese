@@ -3,3 +3,6 @@ dist/
 .netlify/
 .env
 netlify/.netlify/
+
+# códigos reais dos eleitores (nunca versionar)
+*.secret.*

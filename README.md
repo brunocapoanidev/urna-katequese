@@ -42,11 +42,11 @@ Convenções: a landing e o app compartilham a paleta (azul-marinho `#12213a` e 
 2. Em **Site configuration → Environment variables**, crie:
    - `ADMIN_PASSWORD`: senha longa e única do painel.
    - `AUTH_SECRET`: texto aleatório com 32+ caracteres. Sem ele o servidor recusa tudo (de propósito).
-   - `VOTERS_JSON` (recomendado): `[{"id":"jean","name":"Jean","code":"..."}, ...]` com **códigos novos e difíceis de adivinhar**. Assim os códigos não ficam no repositório.
+   - `VOTERS_JSON` (**obrigatória para votar**): lista dos eleitores com seus códigos, em uma linha: `[{"id":"jean-lucca","name":"Jean Lucca","code":"K7M4-9QDX"}, ...]`. É a fonte da verdade e é lida a cada acesso (não é copiada para o Blobs), então dá para corrigir o valor no Netlify e republicar sem limpar nada. Os códigos reais ficam só no Netlify, nunca no repositório.
 3. Publique e abra `/admin` para conferir o painel.
 4. Confira o horário em `/admin` (seção **Horário da votação**; fuso do aparelho) e, se precisar, ajuste e salve. A votação abre e fecha sozinha. Depois do encerramento, **Apurar resultado**.
 
-> Se `VOTERS_JSON` não for definido, valem os eleitores de `data/voters.json`. Se o repositório for público, **esses códigos são públicos**: troque-os antes de publicar ou use `VOTERS_JSON`. As listas são copiadas para o Blobs no primeiro acesso; depois disso, mudar os arquivos em `data/` não altera a urna (a tela inicial lê direto dos arquivos).
+> `data/voters.json` só guarda os **nomes** (com `code` vazio) como referência: sem `VOTERS_JSON`, ninguém consegue entrar. O login aceita o nome sem acento, em qualquer caixa (ex.: `joao pedro`) e o código em qualquer caixa, com ou sem hífen. Arquivos `*.secret.*` são ignorados pelo Git; é neles que ficam os códigos gerados (`voters.secret.json` = valor da variável; `codigos-eleitores.secret.txt` = lista para mandar a cada eleitor).
 
 ## Rodar localmente
 
@@ -56,7 +56,7 @@ Convenções: a landing e o app compartilham a paleta (azul-marinho `#12213a` e 
 4. `npm run dev` abre só o visual, sem servidor: o login entra em modo de demonstração (use o nome `Teste Catequese 2026` e o código `CATEQUESE-2026-TESTE` para ver também a tela de resultados de teste).
 5. `npm test` roda os testes; `npm run build` valida o frontend.
 
-O eleitor de teste (`testOnly`) só funciona localmente; em produção o servidor o recusa e nenhum voto de teste é gravado.
+O eleitor de teste (`testOnly`, em `data/voters.json`) só existe no ambiente local e só quando **não** há `VOTERS_JSON`; em produção ele é sempre recusado e nenhum voto de teste é gravado. Para testar localmente com os códigos reais, ponha `VOTERS_JSON='...'` no `.env`.
 
 ## Conteúdo (candidatos, propostas, imagens)
 
@@ -80,9 +80,9 @@ Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os tr�
 
 - **Textos de exemplo:** `slogan` e `proposals` dos presidentes ainda são `[Slogan da campanha]` / `[Proposta N]`. Os santinhos já trazem as propostas desenhadas, então dá para remover esses textos dos cartões ou preenchê-los.
 - **Fotos:** Tigas e Kayo usam a imagem de dois painéis `tigas-kayo.png` (`photoPosition` 0% e 100%, `photoSize` "200% 100%"). Para trocar, edite `data/deputies.json`. Defina `photo` e `photoPosition` em `data/deputies.json`. As fotos atuais são recortes de uma imagem com 3 painéis (`photoPosition` 0%, 50% ou 100%).
-- **Eleitores:** `data/voters.json` tem os 4 eleitores de exemplo (e o eleitor de teste). **Troque os códigos** ou use `VOTERS_JSON`. Se alguém quiser votar só como eleitor, basta adicionar o nome e um código novo ali.
+- **Eleitores (19):** Anderson, Arthur, Bruno, Guilherme, João Pedro, Jhonder, Jean Lucca, Kayo, Diego, Wesley, Pedro, Pietro, Paulo, Eduardo, Tiago Muller, Tiago Ventorini, Erick, Gustavo e Gregory. O Gregory entrou por dedução (19º membro); confira se a lista bate com o grupo. Para incluir ou tirar alguém, gere novos códigos e atualize `VOTERS_JSON`. Não troque o `id` de quem já votou (ele identifica a participação).
 - **Horário:** `data/election.json` só define o horário **inicial** (copiado para o Blobs no primeiro acesso, hoje sábado 24/10 às 15h até domingo 25/10 às 17h, horário de Brasília). Depois, quem manda é o painel `/admin`. Modos: `auto` (segue o horário), `open` e `closed` (decisão manual, vale acima do horário). A lógica está em `netlify/functions/_schedule.js` (testada em `tests/schedule.test.js`). A contagem usa o relógio do servidor, não o do celular.
-- **Listas no Blobs:** candidatos e eleitores são copiados para o Blobs no primeiro acesso. Depois disso, mudar `data/*.json` não muda a urna em produção (a tela inicial muda). Para alterar com a urna já em uso, use a ação `saveList` do `admin` com a votação **encerrada**, ou limpe os Blobs do site.
+- **Listas no Blobs:** candidatos são copiados para o Blobs no primeiro acesso. Depois disso, mudar `data/presidents.json` ou `data/deputies.json` não muda a urna em produção (a tela inicial muda). Para alterar com a urna já em uso, use a ação `saveList` do `admin` com a votação **encerrada**, ou limpe os Blobs do site. Os eleitores não passam por isso (vêm de `VOTERS_JSON`).
 - **Regra de deputados:** a lista original do grupo dizia "deputado é eleito se o presidente que apoia vencer", mas o combinado foi manter "os 3 mais votados vencem". A apuração atual segue isso (`_tally.js`).
 - **Biblioteca de armazenamento:** `@netlify/blobs` precisa ser ≥ 10 (a 9.x não suportava a escrita condicional e o voto falhava com erro 500).
 - **Windows:** `npx netlify dev` usa `.netlify/` para os Blobs locais; o `vite.config.js` já o ignora para o Vite não cair com EBUSY.

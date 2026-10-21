@@ -4,6 +4,7 @@ import deputiesSeed from '../../data/deputies.json' with { type: 'json' };
 import votersSeed from '../../data/voters.json' with { type: 'json' };
 import electionSeed from '../../data/election.json' with { type: 'json' };
 import { digest, verify } from './_crypto.js';
+import { votersFromEnv } from './_voters.js';
 
 export { digest, isDev, safeEqual, token } from './_crypto.js';
 export { phase, fmt } from './_schedule.js';
@@ -55,21 +56,14 @@ export async function collection(name, seed) {
   return x;
 }
 
-// Os códigos dos eleitores não precisam morar no repositório: VOTERS_JSON (variável de
-// ambiente do Netlify) tem prioridade sobre data/voters.json na primeira carga.
-function votersFromEnv() {
-  try {
-    const list = JSON.parse(process.env.VOTERS_JSON || 'null');
-    return Array.isArray(list) ? list : null;
-  } catch {
-    return null;
-  }
-}
+// Os códigos dos eleitores não ficam no repositório: a variável VOTERS_JSON (Netlify) é a
+// fonte da verdade e é lida a cada chamada, sem copiar para o Blobs. Sem ela, vale a lista
+// de data/voters.json (que não traz códigos válidos).
 
 export const data = async () => ({
   presidents: await collection('presidents', presidentsSeed),
   deputies: await collection('deputies', deputiesSeed),
-  voters: await collection('voters', votersFromEnv() ?? votersSeed),
+  voters: votersFromEnv() ?? (await collection('voters', votersSeed)),
   config: await config(),
 });
 
