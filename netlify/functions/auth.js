@@ -1,4 +1,4 @@
-import { store, data, json, bad, body, handler, attempts, digest, isDev, safeEqual, token } from './_lib.js';
+import { store, data, json, bad, body, handler, attempts, digest, isDev, safeEqual, token, phase, fmt } from './_lib.js';
 import { ADMIN_TTL_MS } from './_crypto.js';
 
 const norm = s => String(s ?? '').trim().toLocaleLowerCase('pt-BR');
@@ -40,6 +40,8 @@ export default handler(async req => {
   if (participation?.state === 'done') {
     return bad('Voto já registrado! Você já participou desta eleição e não poderá votar novamente.', 409);
   }
-  if (d.config.status !== 'open') return bad('A votação não está aberta no momento.', 403);
+  const state = phase(d.config);
+  if (state === 'scheduled') return bad(`A votação ainda não começou. Ela abre ${fmt(d.config.opensAt)}.`, 403);
+  if (state !== 'open') return bad('A votação está encerrada.', 403);
   return json({ token: await token({ role: 'voter', voterId: voter.id }) });
 });

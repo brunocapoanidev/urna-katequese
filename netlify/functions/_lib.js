@@ -2,9 +2,11 @@ import { getStore } from '@netlify/blobs';
 import presidentsSeed from '../../data/presidents.json' with { type: 'json' };
 import deputiesSeed from '../../data/deputies.json' with { type: 'json' };
 import votersSeed from '../../data/voters.json' with { type: 'json' };
+import electionSeed from '../../data/election.json' with { type: 'json' };
 import { digest, verify } from './_crypto.js';
 
 export { digest, isDev, safeEqual, token } from './_crypto.js';
+export { phase, fmt } from './_schedule.js';
 
 export const store = getStore('urna-katequese-v1');
 
@@ -37,7 +39,8 @@ export const auth = (req, role = 'admin') => verify(req.headers.get('authorizati
 export async function config() {
   let x = await store.get('config', { type: 'json' });
   if (!x) {
-    x = { status: 'closed', tieBreak: 'candidate-number', seats: 3 };
+    // status 'auto': abre e fecha sozinha pelos horários de data/election.json (editáveis em /admin).
+    x = { status: 'auto', tieBreak: 'candidate-number', seats: 3, ...electionSeed };
     await store.setJSON('config', x, { onlyIfNew: true });
   }
   return x;

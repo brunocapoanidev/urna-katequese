@@ -1,4 +1,4 @@
-import { store, auth, data, json, bad, body, handler, digest, isDev } from './_lib.js';
+import { store, auth, data, json, bad, body, handler, digest, isDev, phase } from './_lib.js';
 
 const isValid = (choice, list) => choice === 'blank' || list.some(x => x.id === choice);
 
@@ -9,7 +9,7 @@ export default handler(async req => {
 
   const { president, deputy } = await body(req);
   const d = await data();
-  if (d.config.status !== 'open') return bad('Votação encerrada.', 403);
+  if (phase(d.config) !== 'open') return bad('A votação não está aberta.', 403);
   if (!isValid(president, d.presidents) || !isValid(deputy, d.deputies)) return bad('Voto inválido.');
 
   if (user.testOnly && isDev()) return json({ ok: true, testOnly: true });

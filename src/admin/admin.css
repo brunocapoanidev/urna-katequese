@@ -35,3 +35,12 @@
   .stats { grid-template-columns: 1fr; }
   .stats div { grid-template-columns: 1fr auto; align-items: center; }
 }
+
+.pill.wait { background: #fdf3d0; color: #7a5b00; }
+.pill.wait::before { background: var(--accent); }
+.admin-countdown { background: var(--navy); border-radius: 14px; padding: 14px; display: grid; gap: 6px; }
+.admin-countdown .note { color: #c8d1e0; }
+.admin-countdown .lp-countdown-grid { max-width: none; }
+.admin-countdown .lp-countdown-grid strong { font-size: 28px; }
+.schedule { display: grid; gap: 14px; }
+.schedule h3 { margin: 0; font-size: 1.1rem; }

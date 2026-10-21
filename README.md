@@ -8,7 +8,7 @@ Urna privada para a eleição interna do grupo, feita com React/Vite, Netlify Fu
 - **Login do eleitor** (nome + código individual) → **urna** (presidente, depois deputado) → confirmação.
 - **/admin** painel da organização: abrir e encerrar a votação, acompanhar a participação e apurar.
 
-A votação nasce **fechada**. Quem abre e encerra é a organização, em `/admin`.
+A votação **abre e encerra sozinha** nos horários de `data/election.json` (editáveis em `/admin`). Antes da abertura o site mostra uma **contagem regressiva** e o servidor recusa qualquer login; os códigos dos eleitores só passam a valer a partir do horário. A organização também pode abrir ou encerrar na mão em `/admin`.
 
 ## Estrutura do projeto
 
@@ -44,7 +44,7 @@ Convenções: a landing e o app compartilham a paleta (azul-marinho `#12213a` e 
    - `AUTH_SECRET`: texto aleatório com 32+ caracteres. Sem ele o servidor recusa tudo (de propósito).
    - `VOTERS_JSON` (recomendado): `[{"id":"jean","name":"Jean","code":"..."}, ...]` com **códigos novos e difíceis de adivinhar**. Assim os códigos não ficam no repositório.
 3. Publique e abra `/admin` para conferir o painel.
-4. No horário combinado (sábado 15h), entre em `/admin` → **Abrir votação**. No fim (domingo 17h) → **Encerrar votação** → **Apurar resultado**.
+4. Confira o horário em `/admin` (seção **Horário da votação**; fuso do aparelho) e, se precisar, ajuste e salve. A votação abre e fecha sozinha. Depois do encerramento, **Apurar resultado**.
 
 > Se `VOTERS_JSON` não for definido, valem os eleitores de `data/voters.json`. Se o repositório for público, **esses códigos são públicos**: troque-os antes de publicar ou use `VOTERS_JSON`. As listas são copiadas para o Blobs no primeiro acesso; depois disso, mudar os arquivos em `data/` não altera a urna (a tela inicial lê direto dos arquivos).
 
@@ -79,9 +79,9 @@ Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os tr�
 ## Pendências e pontos de atenção (para quem continuar)
 
 - **Textos de exemplo:** `slogan` e `proposals` dos presidentes ainda são `[Slogan da campanha]` / `[Proposta N]`. Os santinhos já trazem as propostas desenhadas, então dá para remover esses textos dos cartões ou preenchê-los.
-- **Fotos faltando:** Tigas e Kayo (deputados) ainda não têm foto. Defina `photo` e `photoPosition` em `data/deputies.json`. As fotos atuais são recortes de uma imagem com 3 painéis (`photoPosition` 0%, 50% ou 100%).
+- **Fotos faltando:** o Kayo (deputado) ainda não tem foto. A foto do Tigas é um arquivo quadrado próprio (`tigas.jpg`, sem `photoPosition`). Defina `photo` e `photoPosition` em `data/deputies.json`. As fotos atuais são recortes de uma imagem com 3 painéis (`photoPosition` 0%, 50% ou 100%).
 - **Eleitores:** `data/voters.json` tem os 4 eleitores de exemplo (e o eleitor de teste). **Troque os códigos** ou use `VOTERS_JSON`. Se alguém quiser votar só como eleitor, basta adicionar o nome e um código novo ali.
-- **Abertura manual:** a votação (sábado 15h até domingo 17h) é aberta e encerrada à mão em `/admin`. O horário na tela inicial é só informativo (`VOTING_WINDOW` em `src/landing/Landing.jsx`).
+- **Horário:** `data/election.json` só define o horário **inicial** (copiado para o Blobs no primeiro acesso, hoje sábado 24/10 às 15h até domingo 25/10 às 17h, horário de Brasília). Depois, quem manda é o painel `/admin`. Modos: `auto` (segue o horário), `open` e `closed` (decisão manual, vale acima do horário). A lógica está em `netlify/functions/_schedule.js` (testada em `tests/schedule.test.js`). A contagem usa o relógio do servidor, não o do celular.
 - **Listas no Blobs:** candidatos e eleitores são copiados para o Blobs no primeiro acesso. Depois disso, mudar `data/*.json` não muda a urna em produção (a tela inicial muda). Para alterar com a urna já em uso, use a ação `saveList` do `admin` com a votação **encerrada**, ou limpe os Blobs do site.
 - **Regra de deputados:** a lista original do grupo dizia "deputado é eleito se o presidente que apoia vencer", mas o combinado foi manter "os 3 mais votados vencem". A apuração atual segue isso (`_tally.js`).
 - **Biblioteca de armazenamento:** `@netlify/blobs` precisa ser ≥ 10 (a 9.x não suportava a escrita condicional e o voto falhava com erro 500).

@@ -31,6 +31,7 @@
 .lp-btn-primary, .lp-pill { background: var(--accent); color: var(--navy); }
 .lp-btn-primary:hover, .lp-pill:hover { filter: brightness(1.06); }
 .lp-btn-ghost { color: var(--paper); border: 1px solid #3a4e73; font-weight: 600; background: transparent; }
+.lp-btn:disabled, .lp-pill:disabled { opacity: 0.55; cursor: not-allowed; filter: none; }
 .lp-btn-lg { font-size: 20px; padding: 20px 40px; }
 .lp-pill { padding: 10px 20px; border-radius: 999px; font-size: 15px; }
 .lp a:focus-visible, .lp button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
@@ -55,6 +56,7 @@
 .lp-status i { width: 8px; height: 8px; border-radius: 50%; }
 .lp-status i.on { background: #4ade80; }
 .lp-status i.off { background: #f97362; }
+.lp-status i.wait { background: var(--accent); }
 .lp-hero h1 { font-size: clamp(38px, 9vw, 76px); line-height: 0.98; font-weight: 900; font-stretch: 85%; letter-spacing: -0.01em; }
 .lp-hero-copy > p { font-size: 17px; line-height: 1.55; color: #c8d1e0; max-width: 560px; }
 .lp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
@@ -158,3 +160,13 @@
 .lp-material { padding: 0 0 72px; }
 .lp-facts dl > .wide { grid-column: 1 / -1; }
 .lp-facts .wide dd { font-size: 22px; }
+
+/* contagem regressiva */
+.lp-countdown { display: flex; flex-direction: column; gap: 8px; }
+.lp-countdown-label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b9c3d6; }
+.lp-countdown-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 460px; }
+.lp-countdown-grid > div { background: var(--navy-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; }
+.lp-countdown-grid strong { font-size: clamp(28px, 8vw, 40px); line-height: 1.1; font-weight: 900; font-stretch: 85%; color: var(--accent); font-variant-numeric: tabular-nums; }
+.lp-countdown-grid span { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #9aa8c2; }
+.lp-when { font-size: 15px; color: #c8d1e0; }
+.lp-when::first-letter, .admin-countdown .note::first-letter { text-transform: uppercase; }

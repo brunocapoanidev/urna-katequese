@@ -1,7 +1,8 @@
-import { store, auth, data, json, bad, body, handler } from './_lib.js';
+import { store, auth, data, json, bad, body, handler, phase } from './_lib.js';
+import { checkSchedule } from './_schedule.js';
 import { tally } from './_tally.js';
 
-const STATUSES = ['open', 'closed'];
+const STATUSES = ['auto', 'open', 'closed'];
 const LISTS = ['presidents', 'deputies', 'voters'];
 
 const readAll = async prefix => {
@@ -22,7 +23,7 @@ async function overview(d) {
   const participation = (await readAll('participation/')).map(p => p.value);
   const count = state => participation.filter(p => p.state === state).length;
   const { voters, ...rest } = d;
-  return { ...rest, stats: { total: voters.length, voted: count('done'), pending: count('pending') } };
+  return { ...rest, phase: phase(d.config), now: Date.now(), stats: { total: voters.length, voted: count('done'), pending: count('pending') } };
 }
 
 export default handler(async req => {
@@ -35,19 +36,29 @@ export default handler(async req => {
   const { action, payload = {} } = await body(req);
 
   if (action === 'config') {
-    if (!STATUSES.includes(payload.status)) return bad('Status inválido.');
-    await store.setJSON('config', { ...d.config, status: payload.status });
+    const next = { ...d.config };
+    if (payload.status !== undefined) {
+      if (!STATUSES.includes(payload.status)) return bad('Status inválido.');
+      next.status = payload.status;
+    }
+    if ('opensAt' in payload || 'closesAt' in payload) {
+      const s = checkSchedule({ opensAt: payload.opensAt, closesAt: payload.closesAt });
+      if (s.error) return bad(s.error);
+      next.opensAt = s.opensAt;
+      next.closesAt = s.closesAt;
+    }
+    await store.setJSON('config', next);
     return json({ ok: true });
   }
 
   if (action === 'saveList' && LISTS.includes(payload.name) && Array.isArray(payload.items)) {
-    if (d.config.status === 'open') return bad('Listas não podem ser alteradas com a votação aberta.', 409);
+    if (phase(d.config) === 'open') return bad('Listas não podem ser alteradas com a votação aberta.', 409);
     await store.setJSON(`lists/${payload.name}`, payload.items);
     return json({ ok: true });
   }
 
   if (action === 'results') {
-    if (d.config.status !== 'closed') return bad('Encerre a votação antes da apuração.', 409);
+    if (phase(d.config) !== 'closed') return bad('A apuração só é liberada depois que a votação for encerrada.', 409);
     const votes = await countedVotes();
     return json({ ...tally(votes, d.presidents, d.deputies, d.config.seats), registered: d.voters.length });
   }

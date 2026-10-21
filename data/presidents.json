@@ -31,21 +31,6 @@
         "width": 1122,
         "height": 1402
       }
-    ],
-    "slogan": "[Slogan da campanha]",
-    "proposals": [
-      {
-        "title": "[Proposta 1]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 2]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 3]",
-        "text": "explique em uma frase"
-      }
     ]
   },
   {
@@ -62,21 +47,6 @@
         "width": 1066,
         "height": 1599
       }
-    ],
-    "slogan": "[Slogan da campanha]",
-    "proposals": [
-      {
-        "title": "[Proposta 1]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 2]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 3]",
-        "text": "explique em uma frase"
-      }
     ]
   },
   {
@@ -92,21 +62,6 @@
         "alt": "Santinho de Pietro Spielmann, candidato a presidente, 10, com Kayo, candidato a deputado",
         "width": 1024,
         "height": 1536
-      }
-    ],
-    "slogan": "[Slogan da campanha]",
-    "proposals": [
-      {
-        "title": "[Proposta 1]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 2]",
-        "text": "explique em uma frase"
-      },
-      {
-        "title": "[Proposta 3]",
-        "text": "explique em uma frase"
       }
     ]
   }

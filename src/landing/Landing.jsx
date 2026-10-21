@@ -1,6 +1,8 @@
 import './landing.css';
 import CandidateCard from './CandidateCard.jsx';
 import PosterCarousel from './PosterCarousel.jsx';
+import Countdown from './Countdown.jsx';
+import { when, whenShort } from '../time.js';
 
 const STEPS = [
   { title: 'Entre com seu código', text: 'Use seu nome e o código individual que você recebeu do grupo.' },
@@ -10,13 +12,18 @@ const STEPS = [
 
 const VOTING_WINDOW = 'Sáb. 15h até dom. 17h';
 
-const STATUS_LABEL = { open: 'Votação aberta', closed: 'Votação encerrada' };
+const STATUS_LABEL = { scheduled: 'Votação em breve', open: 'Votação aberta', closed: 'Votação encerrada' };
 
 const byNumber = (a, b) => a.number.localeCompare(b.number, 'pt-BR', { numeric: true });
 
-export default function Landing({ presidents, deputies, status, onVote }) {
+export default function Landing({ presidents, deputies, config, skew = 0, onVote }) {
   const ordered = [...presidents].sort(byNumber);
-  const label = STATUS_LABEL[status];
+  // Sem servidor (npm run dev) não há config: a tela inicial libera o botão para testar.
+  const status = config?.status ?? 'open';
+  const label = config && STATUS_LABEL[status];
+  const canVote = status === 'open';
+  const period = config?.opensAt && config?.closesAt ? `${whenShort(config.opensAt)} até ${whenShort(config.closesAt)}` : VOTING_WINDOW;
+  const voteLabel = status === 'scheduled' ? 'A votação ainda não abriu' : 'Votação encerrada';
   const posters = ordered.flatMap(p => (p.posters || []).map(x => ({ ...x, label: `${p.name} · ${p.number}` })));
 
   return (
@@ -37,7 +44,7 @@ export default function Landing({ presidents, deputies, status, onVote }) {
           <nav aria-label="Principal" className="lp-nav">
             <a href="#candidatos" className="lp-nav-link">Candidatos</a>
             <a href="#como-votar" className="lp-nav-link">Como votar</a>
-            <button type="button" className="lp-pill" onClick={onVote}>Votar agora</button>
+            <button type="button" className="lp-pill" onClick={onVote} disabled={!canVote}>{canVote ? 'Votar agora' : label}</button>
           </nav>
         </div>
       </header>
@@ -47,16 +54,23 @@ export default function Landing({ presidents, deputies, status, onVote }) {
           <div className="lp-hero-copy">
             {label && (
               <span className="lp-status">
-                <i className={status === 'open' ? 'on' : 'off'} />
+                <i className={status === 'open' ? 'on' : status === 'scheduled' ? 'wait' : 'off'} />
                 {label}
               </span>
             )}
             <h1>Conheça os candidatos.<br />Escolha com consciência.</h1>
             <p>Veja as propostas de cada candidato a presidente e os deputados de cada chapa. Quando estiver pronto, registre o seu voto.</p>
+            {status === 'scheduled' && (
+              <>
+                <Countdown target={config.opensAt} skew={skew} label="A votação abre em" />
+                <p className="lp-when">{when(config.opensAt)}</p>
+              </>
+            )}
+            {status === 'open' && config?.closesAt && <Countdown target={config.closesAt} skew={skew} label="A votação encerra em" />}
             <div className="lp-actions">
-              <button type="button" className="lp-btn lp-btn-primary" onClick={onVote}>
-                Ir para a votação
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              <button type="button" className="lp-btn lp-btn-primary" onClick={onVote} disabled={!canVote}>
+                {canVote ? 'Ir para a votação' : voteLabel}
+                {canVote && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
               </button>
               <a href="#candidatos" className="lp-btn lp-btn-ghost">Ver propostas</a>
             </div>
@@ -67,7 +81,7 @@ export default function Landing({ presidents, deputies, status, onVote }) {
             <dl>
               <div><dt>Presidentes</dt><dd>{presidents.length}</dd></div>
               <div><dt>Deputados</dt><dd>{deputies.length}</dd></div>
-              <div className="wide"><dt>Período de votação</dt><dd>{VOTING_WINDOW}</dd></div>
+              <div className="wide"><dt>Período de votação</dt><dd>{period}</dd></div>
             </dl>
             <p className="lp-secret">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
@@ -130,7 +144,7 @@ export default function Landing({ presidents, deputies, status, onVote }) {
       <section className="lp-cta">
         <div className="lp-wrap lp-cta-inner">
           <h2>Pronto para votar?</h2>
-          <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={onVote}>Votar agora</button>
+          <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={onVote} disabled={!canVote}>{canVote ? 'Votar agora' : voteLabel}</button>
           <small>Simulação privada, não é um sistema oficial do governo.</small>
         </div>
       </section>

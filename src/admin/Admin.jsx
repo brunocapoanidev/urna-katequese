@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api.js';
+import Countdown from '../landing/Countdown.jsx';
+import { when } from '../time.js';
 import './admin.css';
 
 const KEY = 'urna-admin-token';
@@ -91,6 +93,46 @@ function Results({ r, names }) {
   );
 }
 
+const PHASE = {
+  open: { label: 'Votação aberta', css: 'on' },
+  scheduled: { label: 'Votação agendada', css: 'wait' },
+  closed: { label: 'Votação encerrada', css: 'off' },
+};
+const MODE = {
+  auto: 'Automático: abre e encerra pelo horário abaixo.',
+  open: 'Aberta manualmente, sem seguir o horário.',
+  closed: 'Encerrada manualmente, sem seguir o horário.',
+};
+const CONFIRM = {
+  open: 'Abrir a votação agora, sem esperar o horário? Os eleitores poderão votar imediatamente.',
+  closed: 'Encerrar a votação agora? Ninguém mais conseguirá votar e a apuração será liberada.',
+  auto: 'Voltar ao modo automático? A votação passa a seguir o horário de abertura e encerramento.',
+};
+
+const pad = n => String(n).padStart(2, '0');
+const toInput = iso => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+const fromInput = value => (value ? new Date(value).toISOString() : null);
+
+function Schedule({ config, busy, onSave }) {
+  const [opensAt, setOpensAt] = useState(toInput(config.opensAt));
+  const [closesAt, setClosesAt] = useState(toInput(config.closesAt));
+  const dirty = opensAt !== toInput(config.opensAt) || closesAt !== toInput(config.closesAt);
+
+  return (
+    <form className="schedule" onSubmit={e => { e.preventDefault(); onSave({ opensAt: fromInput(opensAt), closesAt: fromInput(closesAt) }); }}>
+      <h3>Horário da votação</h3>
+      <label>Abre em<input type="datetime-local" value={opensAt} onChange={e => setOpensAt(e.target.value)} required /></label>
+      <label>Encerra em<input type="datetime-local" value={closesAt} onChange={e => setClosesAt(e.target.value)} required /></label>
+      <p className="note">No fuso do seu aparelho. Antes do horário de abertura, o site mostra a contagem regressiva e ninguém consegue entrar.</p>
+      <button className="btn btn-dark" disabled={busy || !dirty}>Salvar horário</button>
+    </form>
+  );
+}
+
 function Dashboard({ token, onLogout }) {
   const [info, setInfo] = useState(null);
   const [results, setResults] = useState(null);
@@ -114,12 +156,13 @@ function Dashboard({ token, onLogout }) {
     return () => clearInterval(timer);
   }, [load]);
 
-  async function setStatus(status) {
+  async function change(payload) {
     setBusy(true);
     try {
-      await api('admin', { action: 'config', payload: { status } }, token);
+      await api('admin', { action: 'config', payload }, token);
       setConfirming(null);
       setResults(null);
+      setError('');
       await load();
     } catch (err) {
       fail(err);
@@ -149,7 +192,8 @@ function Dashboard({ token, onLogout }) {
     );
   }
 
-  const open = info.config.status === 'open';
+  const { phase, config } = info;
+  const skew = info.now - Date.now();
   const { total, voted, pending } = info.stats;
   const names = new Map([...info.presidents, ...info.deputies].map(c => [c.id, c.name]));
 
@@ -167,9 +211,19 @@ function Dashboard({ token, onLogout }) {
 
       <section className="panel">
         <div className="status-row">
-          <span className={`pill ${open ? 'on' : 'off'}`}>{open ? 'Votação aberta' : 'Votação encerrada'}</span>
+          <span className={`pill ${PHASE[phase].css}`}>{PHASE[phase].label}</span>
           <button type="button" className="link" onClick={load}>Atualizar</button>
         </div>
+        <p className="note">{MODE[config.status] || MODE.auto}</p>
+        {phase === 'scheduled' && config.opensAt && (
+          <div className="admin-countdown">
+            <Countdown target={config.opensAt} skew={skew} label="Abre em" />
+            <p className="note">{when(config.opensAt)}</p>
+          </div>
+        )}
+        {phase === 'open' && config.status === 'auto' && config.closesAt && (
+          <p className="note">Encerra automaticamente {when(config.closesAt)}.</p>
+        )}
 
         <div className="stats">
           <div><span>Participaram</span><strong>{voted} / {total}</strong></div>
@@ -181,20 +235,16 @@ function Dashboard({ token, onLogout }) {
         </div>
         {pending > 0 && (
           <p className="note">
-            “Em processamento” é um voto interrompido no meio do envio. Se persistir depois do encerramento,
+            "Em processamento" é um voto interrompido no meio do envio. Se persistir depois do encerramento,
             o eleitor precisa de apoio da organização.
           </p>
         )}
 
         {confirming ? (
           <div className="confirm">
-            <p>
-              {confirming === 'open'
-                ? 'Abrir a votação agora? Os eleitores poderão votar imediatamente.'
-                : 'Encerrar a votação? Ninguém mais conseguirá votar e a apuração será liberada.'}
-            </p>
+            <p>{CONFIRM[confirming]}</p>
             <div className="row">
-              <button type="button" className="btn btn-primary" disabled={busy} onClick={() => setStatus(confirming)}>
+              <button type="button" className="btn btn-primary" disabled={busy} onClick={() => change({ status: confirming })}>
                 {busy ? 'Aguarde...' : 'Confirmar'}
               </button>
               <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => setConfirming(null)}>Cancelar</button>
@@ -202,17 +252,17 @@ function Dashboard({ token, onLogout }) {
           </div>
         ) : (
           <div className="row">
-            {open ? (
-              <button type="button" className="btn btn-dark" onClick={() => setConfirming('closed')}>Encerrar votação</button>
-            ) : (
-              <>
-                <button type="button" className="btn btn-primary" onClick={() => setConfirming('open')}>Abrir votação</button>
-                <button type="button" className="btn btn-dark" disabled={busy} onClick={count}>Apurar resultado</button>
-              </>
-            )}
+            {phase !== 'open' && <button type="button" className="btn btn-primary" onClick={() => setConfirming('open')}>Abrir agora</button>}
+            {phase === 'open' && <button type="button" className="btn btn-dark" onClick={() => setConfirming('closed')}>Encerrar agora</button>}
+            {config.status !== 'auto' && <button type="button" className="btn btn-ghost" onClick={() => setConfirming('auto')}>Seguir o horário</button>}
+            {phase === 'closed' && <button type="button" className="btn btn-dark" disabled={busy} onClick={count}>Apurar resultado</button>}
           </div>
         )}
-        {open && <p className="note">A apuração só fica disponível depois de encerrar a votação. Não divulgue resultados antes disso.</p>}
+        {phase === 'open' && <p className="note">A apuração só fica disponível depois do encerramento. Não divulgue resultados antes disso.</p>}
+      </section>
+
+      <section className="panel">
+        <Schedule key={`${config.opensAt}|${config.closesAt}`} config={config} busy={busy} onSave={change} />
       </section>
 
       {results && <Results r={results} names={names} />}
