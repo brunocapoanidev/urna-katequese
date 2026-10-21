@@ -1,0 +1,37 @@
+.admin-page { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; display: flex; flex-direction: column; gap: 16px; }
+.admin-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.admin-head h1 { font-size: 1.8rem; font-weight: 900; font-stretch: 90%; }
+.admin-head .btn { min-height: 44px; padding: 8px 18px; }
+
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 30px rgba(18, 33, 58, 0.08); }
+.panel h2 { font-size: 1.4rem; font-weight: 900; font-stretch: 90%; }
+.panel h3 { font-size: 1.05rem; margin-top: 6px; }
+.panel h3 small { color: var(--ink-soft); font-weight: 600; }
+.panel .lead { color: var(--ink-soft); }
+.note { font-size: 0.85rem; color: var(--ink-soft); }
+
+.status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 0.85rem; background: #ebe7dc; }
+.pill::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--danger); }
+.pill.on { background: #e4f2e8; color: var(--ok); }
+.pill.on::before { background: var(--ok); }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stats div { background: var(--paper); border-radius: 12px; padding: 12px; display: grid; gap: 2px; }
+.stats span { font-size: 0.75rem; color: var(--ink-soft); }
+.stats strong { font-size: 1.4rem; font-weight: 900; }
+.meter { height: 12px; border-radius: 999px; background: #ebe7dc; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s; }
+
+.confirm { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 12px; }
+.confirm p { font-weight: 700; }
+
+.winner { background: var(--navy); color: var(--paper); border-radius: 14px; padding: 16px; display: grid; gap: 2px; }
+.winner span { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b9c3d6; }
+.winner strong { font-size: 1.8rem; font-weight: 900; font-stretch: 88%; color: var(--accent); }
+.winner small { color: #c8d1e0; }
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr; }
+  .stats div { grid-template-columns: 1fr auto; align-items: center; }
+}

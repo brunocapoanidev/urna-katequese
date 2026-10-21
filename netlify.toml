@@ -5,3 +5,17 @@
 
 [dev]
   framework = "vite"
+
+# O painel de administração é uma rota do próprio app (/admin).
+[[redirects]]
+  from = "/admin"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

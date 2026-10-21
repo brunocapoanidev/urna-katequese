@@ -2,14 +2,85 @@ import { getStore } from '@netlify/blobs';
 import presidentsSeed from '../../data/presidents.json' with { type: 'json' };
 import deputiesSeed from '../../data/deputies.json' with { type: 'json' };
 import votersSeed from '../../data/voters.json' with { type: 'json' };
-export const store=getStore('urna-katequese-v1');
-export const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
-export const bad=(message,status=400)=>json({error:message},status);
-export async function config(){let x=await store.get('config',{type:'json'}); if(!x){x={status:'closed',tieBreak:'candidate-number',seats:3}; await store.setJSON('config',x,{onlyIfNew:true});} return x}
-export async function collection(name, seed){let x=await store.get(`lists/${name}`,{type:'json'}); if(!x){x=seed; await store.setJSON(`lists/${name}`,x,{onlyIfNew:true});} return x}
-export const data=async()=>({presidents:await collection('presidents',presidentsSeed),deputies:await collection('deputies',deputiesSeed),voters:await collection('voters',votersSeed),config:await config()});
-const enc=new TextEncoder(); const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
-export async function digest(s){return hex(await crypto.subtle.digest('SHA-256',enc.encode(s)))}
-export async function sign(s){let k=await crypto.subtle.importKey('raw',enc.encode(process.env.AUTH_SECRET||'dev-only-change-me-please-123456789'),{name:'HMAC',hash:'SHA-256'},false,['sign']);return hex(await crypto.subtle.sign('HMAC',k,enc.encode(s)))}
-export async function token(payload){let raw=btoa(JSON.stringify({...payload,exp:Date.now()+900000}));return `${raw}.${await sign(raw)}`}
-export async function auth(req,role='admin'){let h=req.headers.get('authorization')||'';let [raw,sig]=h.replace('Bearer ','').split('.');if(!raw||sig!==await sign(raw))return null;try{let p=JSON.parse(atob(raw));return p.role===role&&p.exp>Date.now()?p:null}catch{return null}}
+import { digest, verify } from './_crypto.js';
+
+export { digest, isDev, safeEqual, token } from './_crypto.js';
+
+export const store = getStore('urna-katequese-v1');
+
+export const json = (data, status = 200) =>
+  Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
+export const bad = (message, status = 400) => json({ error: message }, status);
+
+/** Envolve uma function: erros viram respostas JSON em vez de páginas de erro. */
+export const handler = fn => async (req, context) => {
+  try {
+    return await fn(req, context);
+  } catch (e) {
+    if (e instanceof SyntaxError) return bad('Requisição inválida.');
+    console.error(e);
+    return bad('Erro interno. Tente novamente em instantes.', 500);
+  }
+};
+
+/** Lê o corpo JSON; um corpo ausente ou malformado vira {}. */
+export const body = async req => {
+  try {
+    return (await req.json()) ?? {};
+  } catch {
+    return {};
+  }
+};
+
+export const auth = (req, role = 'admin') => verify(req.headers.get('authorization'), role);
+
+export async function config() {
+  let x = await store.get('config', { type: 'json' });
+  if (!x) {
+    x = { status: 'closed', tieBreak: 'candidate-number', seats: 3 };
+    await store.setJSON('config', x, { onlyIfNew: true });
+  }
+  return x;
+}
+
+export async function collection(name, seed) {
+  let x = await store.get(`lists/${name}`, { type: 'json' });
+  if (!x) {
+    x = seed;
+    await store.setJSON(`lists/${name}`, x, { onlyIfNew: true });
+  }
+  return x;
+}
+
+// Os códigos dos eleitores não precisam morar no repositório: VOTERS_JSON (variável de
+// ambiente do Netlify) tem prioridade sobre data/voters.json na primeira carga.
+function votersFromEnv() {
+  try {
+    const list = JSON.parse(process.env.VOTERS_JSON || 'null');
+    return Array.isArray(list) ? list : null;
+  } catch {
+    return null;
+  }
+}
+
+export const data = async () => ({
+  presidents: await collection('presidents', presidentsSeed),
+  deputies: await collection('deputies', deputiesSeed),
+  voters: await collection('voters', votersFromEnv() ?? votersSeed),
+  config: await config(),
+});
+
+const ATTEMPT_WINDOW_MS = 10 * 60 * 1000;
+const MAX_ATTEMPTS = 8;
+
+/** Limita tentativas de login erradas por identificador (nome do eleitor ou "admin"). */
+export async function attempts(scope, id) {
+  const key = `throttle/${scope}/${await digest(String(id).trim().toLowerCase())}`;
+  const rec = await store.get(key, { type: 'json' });
+  const fresh = rec && Date.now() - rec.first < ATTEMPT_WINDOW_MS;
+  return {
+    blocked: Boolean(fresh && rec.count >= MAX_ATTEMPTS),
+    fail: () => store.setJSON(key, { count: (fresh ? rec.count : 0) + 1, first: fresh ? rec.first : Date.now() }),
+    clear: () => (rec ? store.delete(key) : undefined),
+  };
+}

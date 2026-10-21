@@ -1,2 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=Outfit:wght@400;600;700;800&display=swap');*{box-sizing:border-box}body{margin:0;background:#f4eee8;color:#241914;font-family:Outfit,system-ui}.welcome,.admin,.end{max-width:500px;margin:8vh auto;padding:34px;background:#fff;border:1px solid #e5d7cc;border-radius:24px;box-shadow:0 18px 60px #3c21101c}.seal{font-size:38px;color:#8b4225}.eyebrow{letter-spacing:.12em;font-size:.72rem;color:#8b4225;font-weight:800}h1{font-size:2rem;margin:.2rem 0}form{display:grid;gap:15px;margin:28px 0}label{font-weight:700;display:grid;gap:7px}input{font:inherit;padding:13px;border-radius:10px;border:1px solid #d5c4b8}button{font:700 15px Outfit;border:0;border-radius:9px;padding:14px 16px;background:#573222;color:white;cursor:pointer}.error{color:#ad1e18;margin:0}.welcome small{color:#74645b}.ballot{min-height:100vh;background:linear-gradient(135deg,#4e291e,#201713);padding:25px}.ballot header{color:#fff;display:flex;justify-content:space-between;max-width:850px;margin:auto auto 16px;font-size:.8rem;letter-spacing:.08em}.machine{max-width:850px;margin:auto;background:#d6d0c3;border-radius:8px;padding:24px;display:grid;grid-template-columns:1.35fr 1fr;gap:22px;box-shadow:0 20px 50px #0008}.screen{min-height:390px;background:#dce4d6;border:10px solid #111;padding:20px;color:#111}.cargo{margin:0;font-size:.75rem}.screen h2{margin:3px 0;font-size:1.4rem}.number{font:800 3rem 'DM Mono';border-bottom:2px solid #333;width:max-content;min-width:100px}.candidate{display:grid;gap:5px;margin-top:32px;font-size:1rem}.candidate strong{font-size:1.5rem}.instruction{margin-top:40px;font-weight:600}.review{border-top:1px solid #333;padding-top:12px;position:relative;top:80px;font-size:.8rem}.keys{background:#333;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}.key{border-radius:2px;background:#171717;box-shadow:0 3px #000;padding:16px;font:700 20px 'DM Mono'}.key:nth-child(10){grid-column:2}.keys .white,.keys .orange,.keys .green{grid-column:span 1;border-radius:2px;font-size:.67rem;padding:14px 4px;color:#111}.white{background:#eee}.orange{background:#ec9f28}.green{background:#55a952!important;color:#062306!important}.end{text-align:center}.end div{font:800 clamp(4rem,17vw,8rem) Outfit;color:#306b37}.stats{display:flex;gap:10px;margin:20px 0}.stats div{background:#f1e8e1;border-radius:12px;padding:14px;flex:1;display:grid}.stats span{font-size:.75rem}.secondary{background:#8e5f45;margin-left:8px}.admin pre{overflow:auto;background:#201713;color:#d9f0cf;padding:15px}.note{font-size:.85rem;color:#665}.loading{padding:40px;text-align:center}@media(max-width:600px){.welcome,.admin,.end{margin:0;min-height:100vh;border-radius:0}.ballot{padding:12px}.machine{padding:12px;grid-template-columns:1fr}.screen{min-height:330px}.keys{grid-template-columns:repeat(3,1fr)}.review{top:35px}.ballot header{font-size:.62rem}}
- .candidate-photo{width:108px;height:108px;border:3px solid #111;float:right;justify-self:end;margin-bottom:-105px;background-size:300% 100%;background-repeat:no-repeat;background-color:#ddd}
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=DM+Mono:wght@500&display=swap');
+
+:root {
+  --navy: #12213a;
+  --navy-2: #1a2c4b;
+  --paper: #f6f4ee;
+  --line: #e3ded2;
+  --accent: #f2b705;
+  --ink: #12213a;
+  --ink-soft: #4a5568;
+  --danger: #b3261e;
+  --ok: #2b6a3f;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Archivo', system-ui, sans-serif; line-height: 1.5; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* cartão central (login, fim, resultados, admin) */
+.card { max-width: 480px; margin: 6vh auto; padding: 32px; background: #fff; border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 18px 60px rgba(18, 33, 58, 0.12); display: flex; flex-direction: column; gap: 14px; }
+.card.wide { max-width: 640px; }
+.card h1 { font-size: 2rem; font-weight: 900; font-stretch: 90%; line-height: 1.1; }
+.card .lead { color: var(--ink-soft); }
+.brand-mark { width: 44px; height: 44px; border-radius: 12px; background: var(--accent); color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 22px; }
+.eyebrow { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.72rem; font-weight: 800; color: var(--ink-soft); }
+.fine { color: var(--ink-soft); font-size: 0.8rem; }
+.error { color: var(--danger); font-weight: 600; }
+.loading { padding: 40px; text-align: center; }
+form { display: grid; gap: 16px; margin: 8px 0; }
+label { font-weight: 700; display: grid; gap: 7px; }
+input { font: inherit; padding: 13px; border-radius: 10px; border: 1px solid #c9c3b4; background: #fff; color: var(--ink); min-height: 48px; }
+
+/* botões */
+.btn { font: 800 16px 'Archivo', system-ui, sans-serif; min-height: 48px; padding: 12px 22px; border-radius: 12px; border: 1px solid transparent; cursor: pointer; text-align: center; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: var(--navy); }
+.btn-dark { background: var(--navy); color: var(--paper); }
+.btn-ghost { background: transparent; color: var(--navy); border-color: #b9b39f; }
+.btn:not(:disabled):hover { filter: brightness(1.07); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.row .btn { flex: 1 1 160px; }
+.back { font: 700 15px 'Archivo', system-ui, sans-serif; align-self: flex-start; background: none; border: 0; color: var(--navy); padding: 6px 0; min-height: 44px; cursor: pointer; }
+.back:hover { text-decoration: underline; }
+.link { background: none; border: 0; color: var(--navy); font: 700 14px 'Archivo', system-ui, sans-serif; text-decoration: underline; cursor: pointer; padding: 8px 0; }
+
+/* fim */
+.done { text-align: center; align-items: center; }
+.done-check { width: 76px; height: 76px; border-radius: 50%; background: #e4f2e8; color: var(--ok); display: flex; align-items: center; justify-content: center; }
+.done h1 { font-size: clamp(3.5rem, 16vw, 6rem); color: var(--ok); }
+.done .row { width: 100%; }
+
+/* ranking (resultados de teste e admin) */
+.rank { display: grid; gap: 8px; margin-top: 8px; }
+.rank h2 { font-size: 1.2rem; }
+.rank-row { display: grid; grid-template-columns: minmax(90px, 1.2fr) 2fr auto; align-items: center; gap: 10px; }
+.rank-name { font-weight: 700; min-width: 0; }
+.rank-name small { color: var(--ink-soft); font-weight: 600; }
+.rank-bar { height: 12px; border-radius: 999px; background: #ebe7dc; overflow: hidden; }
+.rank-bar i { display: block; height: 100%; background: var(--navy); border-radius: 999px; }
+.rank-row.win .rank-bar i { background: var(--accent); }
+.rank-row b { min-width: 2ch; text-align: right; }
+
+/* ---- urna ---- */
+.ballot { min-height: 100vh; min-height: 100dvh; background: linear-gradient(160deg, var(--navy-2), #0b1424); padding: 20px 16px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.ballot-top { color: #fff; display: flex; justify-content: space-between; gap: 12px; width: 100%; max-width: 880px; margin: 0 auto; font-size: 0.78rem; letter-spacing: 0.08em; }
+.machine { width: 100%; max-width: 880px; margin: 0 auto; background: #d9d7d0; border-radius: 14px; padding: 22px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
+.screen { display: flex; flex-direction: column; gap: 6px; min-height: 400px; background: #dce4d6; border: 10px solid #111; padding: 18px; color: #111; }
+.cargo { font-size: 0.75rem; }
+.screen h2 { font-size: 1.4rem; font-weight: 800; }
+.number { display: flex; gap: 8px; margin-top: 4px; }
+.number span { width: 46px; height: 58px; border-bottom: 3px solid #333; font: 500 2.6rem/58px 'DM Mono', monospace; text-align: center; }
+.candidate { display: flex; align-items: flex-start; gap: 14px; margin-top: 14px; }
+.candidate-info { display: grid; gap: 4px; min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.candidate-info strong { font-size: 1.5rem; line-height: 1.15; }
+.candidate-photo { flex: none; width: 104px; height: 104px; border: 3px solid #111; background-color: #ddd; background-repeat: no-repeat; background-size: auto 100%; }
+.instruction { margin-top: 16px; font-weight: 700; }
+.instruction.warn { color: var(--danger); }
+.review { margin-top: auto; border-top: 1px solid #333; padding-top: 10px; font-size: 0.8rem; }
+.keys { background: #2a2f3a; padding: 14px; border-radius: 6px; display: grid; gap: 14px; align-content: start; }
+.digits, .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.key { min-height: 58px; border: 0; border-radius: 4px; background: #171717; color: #fff; box-shadow: 0 3px #000; font: 500 22px 'DM Mono', monospace; cursor: pointer; }
+.key-zero { grid-column: 2; }
+.key:active, .act:active { transform: translateY(2px); box-shadow: none; }
+.act { min-height: 54px; border: 0; border-radius: 4px; font: 800 0.72rem 'Archivo', system-ui, sans-serif; color: #111; cursor: pointer; box-shadow: 0 3px rgba(0, 0, 0, 0.5); }
+.act:disabled { opacity: 0.6; }
+.white { background: #f0f0f0; }
+.orange { background: #ec9f28; }
+.green { background: #55a952; color: #062306; }
+
+@media (max-width: 640px) {
+  .card, .card.wide { margin: 0; min-height: 100vh; border-radius: 0; border-left: 0; border-right: 0; box-shadow: none; padding: 24px 20px; }
+  .ballot { padding: 12px 10px; justify-content: flex-start; }
+  .ballot-top { font-size: 0.62rem; }
+  .machine { grid-template-columns: 1fr; padding: 12px; gap: 14px; }
+  .screen { min-height: 340px; }
+  .candidate-photo { width: 88px; height: 88px; }
+  .number span { width: 40px; }
+}

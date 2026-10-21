@@ -1,1 +1,38 @@
-[{"id":"jp-cria","name":"Jp Cria","number":"4518","presidentId":"bruno-capoani","photo":"/candidates/deputados.png","photoPosition":"0%"},{"id":"tigas","name":"Tigas","number":"5138","presidentId":"pedro-galli"},{"id":"gregory","name":"Gregory","number":"4569","presidentId":"bruno-capoani","photo":"/candidates/deputados.png","photoPosition":"50%"},{"id":"kayo","name":"Kayo","number":"1068","presidentId":"pietro-spielmann"},{"id":"diego","name":"Diego","number":"1069","presidentId":"pietro-spielmann","photo":"/candidates/deputados.png","photoPosition":"100%"}]
+[
+  {
+    "id": "jp-cria",
+    "name": "Jp Cria",
+    "number": "4518",
+    "presidentId": "bruno-capoani",
+    "photo": "/candidates/deputados.png",
+    "photoPosition": "0%"
+  },
+  {
+    "id": "tigas",
+    "name": "Tigas",
+    "number": "5138",
+    "presidentId": "pedro-galli"
+  },
+  {
+    "id": "gregory",
+    "name": "Gregory",
+    "number": "4569",
+    "presidentId": "bruno-capoani",
+    "photo": "/candidates/deputados.png",
+    "photoPosition": "50%"
+  },
+  {
+    "id": "kayo",
+    "name": "Kayo",
+    "number": "1067",
+    "presidentId": "pietro-spielmann"
+  },
+  {
+    "id": "diego",
+    "name": "Diego",
+    "number": "1069",
+    "presidentId": "pietro-spielmann",
+    "photo": "/candidates/deputados.png",
+    "photoPosition": "100%"
+  }
+]
