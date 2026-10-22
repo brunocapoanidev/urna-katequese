@@ -856,7 +856,7 @@
   background: rgba(18, 33, 58, 0.96);
   border-top: 2px solid var(--accent);
   color: var(--paper);
-  padding: 12px 0;
+  padding: 10px 0;
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(6px);
 }
@@ -865,14 +865,14 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 16px;
+  gap: 8px 14px;
 }
 .lp-colinha-items {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 18px;
-  font-size: 14px;
+  gap: 6px 12px;
+  font-size: 13px;
 }
 .lp-colinha-tag {
   color: var(--accent);

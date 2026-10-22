@@ -849,30 +849,43 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  min-width: 0;
 }
 
 .kx-comment-form {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 .kx-comment-form input {
-  flex: 1;
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
   background: var(--kx-card);
   border: 1px solid var(--kx-border);
   color: var(--kx-fg);
   border-radius: 999px;
-  padding: 8px 14px;
+  padding: 9px 14px;
   font: inherit;
-  font-size: 13.5px;
+  font-size: 15px;
+}
+.kx-comment-form input:focus {
+  outline: 2px solid var(--kx-blue);
+  border-color: transparent;
 }
 .kx-comment-form button {
+  flex: none;
+  white-space: nowrap;
   background: var(--kx-blue);
   color: #fff;
   border: 0;
   border-radius: 999px;
-  padding: 7px 14px;
-  font: 700 13px inherit;
+  min-height: 38px;
+  padding: 8px 15px;
+  font: 800 13px inherit;
   cursor: pointer;
 }
 
@@ -880,19 +893,27 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  min-width: 0;
 }
 
 .kx-comment-item {
   display: flex;
+  align-items: flex-start;
   gap: 9px;
   font-size: 13.5px;
+  width: 100%;
+  min-width: 0;
 }
 
 .kx-comment-content {
-  flex: 1;
+  flex: 1 1 0%;
+  min-width: 0;
   background: var(--kx-card);
   border-radius: 12px;
   padding: 8px 12px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .kx-comment-head {
@@ -900,11 +921,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .kx-comment-content p {
   margin: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 /* Cabeçalho de Perfil */
@@ -1460,6 +1483,114 @@
   overflow-y: auto;
 }
 
+/* Modo STK (Superior Tribunal Katequesense) */
+.kx-nav-stk {
+  color: #fbbf24;
+}
+.kx-stk-gavel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  color: #fbbf24;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font: 800 11px inherit;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.kx-stk-gavel-btn:hover {
+  background: rgba(245, 158, 11, 0.28);
+}
+
+.kx-stk-removed-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.kx-stk-removed-banner {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.35) 0%, rgba(24, 24, 27, 0.9) 100%);
+  border: 1.5px solid #ef4444;
+  border-left: 4px solid #fbbf24;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kx-stk-removed-banner strong {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+  text-transform: uppercase;
+}
+.kx-stk-removed-banner p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--kx-fg);
+}
+
+.kx-stk-flagged-banner {
+  background: rgba(245, 158, 11, 0.11);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-left: 4px solid #f59e0b;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kx-stk-flagged-banner strong {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #fbbf24;
+  text-transform: uppercase;
+}
+.kx-stk-flagged-banner p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--kx-fg);
+}
+
+.kx-stk-secret-box {
+  background: var(--kx-card);
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  border-radius: 10px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kx-stk-secret-box small {
+  font-size: 11px;
+  color: #fbbf24;
+  font-weight: 700;
+}
+.kx-stk-secret-box p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--kx-fg-muted);
+}
+
+.kx-stk-accounts-bar {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--kx-border);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.kx-stk-submit {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #09090b;
+}
+
 /* Seletor de Selo da 2ª Conta */
 .kx-badge-selector {
   display: grid;
@@ -1657,6 +1788,11 @@
   .kx-left-rail {
     display: none;
   }
+  .kx-center-col {
+    border-left: 0;
+    border-right: 0;
+    padding-bottom: 96px;
+  }
   .kx-mobile-top {
     display: flex;
   }
@@ -1668,6 +1804,49 @@
   }
   .kx-badge-selector {
     grid-template-columns: 1fr;
+  }
+  /* Evita auto-zoom forçado do iOS/Android ao tocar em qualquer campo de texto */
+  .kx-comment-form input,
+  .kx-search-box input,
+  .kx-poll-opt-input input,
+  .kx-edit-post-form textarea,
+  .kx-field input,
+  .kx-field textarea,
+  .kx-login-form input {
+    font-size: 16px;
+  }
+  /* Faz a caixa de comentários usar 100% da largura do post no celular (saindo do recuo do avatar) */
+  .kx-comments-section,
+  .kx-inline-replies-preview {
+    margin-left: -54px;
+    width: calc(100% + 54px);
+  }
+  .kx-comment-form {
+    gap: 6px;
+  }
+  .kx-comment-form .kx-avatar-sm {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+  .kx-comment-form input {
+    padding: 9px 12px;
+  }
+  .kx-comment-form button {
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+  /* Modal estilo Bottom Sheet no celular para não brigar com o teclado virtual */
+  .kx-modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .kx-modal {
+    max-width: 100%;
+    max-height: 90dvh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 0;
+    padding: 16px 16px 28px;
   }
   .kx-mobile-bottom {
     position: fixed;

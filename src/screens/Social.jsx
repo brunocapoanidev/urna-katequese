@@ -31,6 +31,14 @@ const CAMPAIGN_MEDIA_PRESETS = [
   { label: 'Santinho Pietro 10 & Kayo', url: '/candidates/pietro-spielmann.jpg' },
 ];
 
+const STK_REASONS = [
+  'Fake News / Desinformação Eleitoral comprovada pelo Plenário do STK',
+  'Ataque às Instituições Democráticas da Katequese e à Urna JEK',
+  'Promessa fraudulenta de Churrasco e Auxílio-Carvão sem lastro orçamentário',
+  'Abuso de Poder Econômico, Político e Resenha Ilegal no Grupo',
+  'Determinação de Ofício no Inquérito das Fake News da Katequese',
+];
+
 const Icon = {
   LogoX: ({ size = 28 }) => (
     <img
@@ -195,6 +203,15 @@ const Icon = {
       <line x1="21" x2="9" y1="12" y2="12" />
     </svg>
   ),
+  Gavel: ({ size = 18 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m14 13-7.5 7.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L11 10" />
+      <path d="m16 16 6-6" />
+      <path d="m8 8 6-6" />
+      <path d="m9 7 8 8" />
+      <path d="m21 11-8-8" />
+    </svg>
+  ),
 };
 
 function getInitialCode() {
@@ -242,10 +259,11 @@ function compressImageFile(file, maxSize = 720, quality = 0.8) {
 
 function AccountBadge({ profile }) {
   if (!profile) return null;
-  const type = profile.verified ? 'official' : profile.badgeType || 'none';
+  const type = profile.badgeType === 'stk' ? 'stk' : profile.verified ? 'official' : profile.badgeType || 'none';
   if (type === 'none') return null;
 
   const badgeConfig = {
+    stk: { color: '#fbbf24', label: 'Jurisdição Suprema · Superior Tribunal Katequesense (STK)' },
     official: { color: '#1d9bf0', label: 'Conta Oficial de Candidato · JEK 2026' },
     gossip: { color: '#ef4444', label: 'Portal / Página de Fofoca & Bastidores' },
     campaign: { color: '#f59e0b', label: 'QG / Página de Campanha' },
@@ -343,6 +361,11 @@ export default function Social({ onBack, onGoTitulo }) {
   const [searchTag, setSearchTag] = useState('');
   const [viewingProfileId, setViewingProfileId] = useState(null);
   const [followModal, setFollowModal] = useState(null); // { profileId, mode: 'following' | 'followers' }
+  const [stkModalPost, setStkModalPost] = useState(null);
+  const [stkMode, setStkMode] = useState('remove'); // 'remove' | 'flag'
+  const [stkReason, setStkReason] = useState(STK_REASONS[0]);
+  const [stkMinisterName, setStkMinisterName] = useState('');
+  const [stkFilter, setStkFilter] = useState('all'); // 'all' | 'removed' | 'flagged'
   const [editingProfileType, setEditingProfileType] = useState(null);
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [commentDraft, setCommentDraft] = useState('');
@@ -829,6 +852,61 @@ export default function Social({ onBack, onGoTitulo }) {
     }
   }
 
+  function openStkModal(post) {
+    setStkModalPost(post);
+    setStkMode(post.stkAction?.status === 'flagged' ? 'flag' : 'remove');
+    setStkReason(post.stkAction?.reason || STK_REASONS[0]);
+    setStkMinisterName(post.stkAction?.ministerName || myAccounts?.primary?.name || 'Ministro Relator');
+  }
+
+  async function handleStkModerate(e) {
+    e.preventDefault();
+    if (!stkModalPost) return;
+    setBusy(true);
+    try {
+      const res = await api('social', {
+        action: 'stkModerate',
+        code,
+        postId: stkModalPost.id,
+        mode: stkMode,
+        reason: stkReason,
+        ministerName: stkMinisterName,
+      });
+      setPosts(res.posts);
+      setTrends(res.trends);
+      setStkModalPost(null);
+      showNotice(
+        stkMode === 'remove'
+          ? '⚖️ Publicação removida por ordem do STK!'
+          : '⚖️ Publicação marcada com alerta do STK!',
+      );
+    } catch (err) {
+      showNotice(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleStkRestore(postId) {
+    setBusy(true);
+    try {
+      const res = await api('social', {
+        action: 'stkModerate',
+        code,
+        postId,
+        mode: 'restore',
+      });
+      setPosts(res.posts);
+      setTrends(res.trends);
+      if (stkModalPost?.id === postId) setStkModalPost(null);
+      showNotice('⚖️ Publicação devolvida / restaurada pelo STK!');
+    } catch (err) {
+      showNotice(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleUploadImage(e, targetSetter) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -940,6 +1018,10 @@ export default function Social({ onBack, onGoTitulo }) {
     () => [...profilesMap.values()].filter(p => p.type === 'primary' && !p.verified),
     [profilesMap],
   );
+  const stkModeratedPosts = useMemo(
+    () => posts.filter(p => Boolean(p.stkAction)),
+    [posts],
+  );
 
   if (!myAccounts) {
     return (
@@ -1002,6 +1084,135 @@ export default function Social({ onBack, onGoTitulo }) {
   return (
     <div className={`kx-root kx-${theme}`}>
       {toast && <div className="kx-toast" role="status">{toast}</div>}
+
+      {/* Modal de Despacho Judicial do STK (Superior Tribunal Katequesense) */}
+      {stkModalPost && myAccounts?.isStk && (
+        <div className="kx-modal-backdrop" onClick={() => setStkModalPost(null)}>
+          <form
+            className="kx-modal kx-stk-modal"
+            onClick={e => e.stopPropagation()}
+            onSubmit={handleStkModerate}
+          >
+            <header className="kx-modal-head">
+              <div>
+                <span className="kx-kicker" style={{ color: '#fbbf24' }}>
+                  ⚖️ Jurisdição Suprema · Superior Tribunal Katequesense
+                </span>
+                <h3>Despacho Judicial sobre Publicação</h3>
+              </div>
+              <button type="button" className="kx-icon-btn" onClick={() => setStkModalPost(null)}>
+                <Icon.Close size={18} />
+              </button>
+            </header>
+
+            <div className="kx-quoted-card">
+              <div className="kx-quoted-head">
+                <strong>{profilesMap.get(stkModalPost.authorId)?.name}</strong>
+                <span className="kx-handle">
+                  @{profilesMap.get(stkModalPost.authorId)?.handle}
+                </span>
+              </div>
+              <p>{stkModalPost.text || '(Publicação com mídia / enquete)'}</p>
+            </div>
+
+            <div className="kx-field">
+              <span>Tipo de Decisão do STK</span>
+              <div className="kx-badge-selector">
+                <button
+                  type="button"
+                  className={`kx-badge-opt${stkMode === 'remove' ? ' is-active' : ''}`}
+                  onClick={() => setStkMode('remove')}
+                >
+                  <i style={{ backgroundColor: '#ef4444' }} />
+                  <span>Remover Publicação (Tarja Judicial)</span>
+                </button>
+                <button
+                  type="button"
+                  className={`kx-badge-opt${stkMode === 'flag' ? ' is-active' : ''}`}
+                  onClick={() => setStkMode('flag')}
+                >
+                  <i style={{ backgroundColor: '#fbbf24' }} />
+                  <span>Marcar Publicação (Alerta do STK)</span>
+                </button>
+              </div>
+            </div>
+
+            <label className="kx-field">
+              <span>Nome do Ministro Relator (Ex.mo)</span>
+              <input
+                value={stkMinisterName}
+                onChange={e => setStkMinisterName(e.target.value)}
+                placeholder="Ex.: Min. Alexandre de Katequese"
+                maxLength={50}
+                required
+              />
+            </label>
+
+            <div className="kx-field">
+              <span>Motivos Pré-definidos do Código Eleitoral Katequista (clique para usar)</span>
+              <div className="kx-preset-chips">
+                {STK_REASONS.map(r => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setStkReason(r)}
+                    style={
+                      stkReason === r
+                        ? { borderColor: '#fbbf24', color: '#fbbf24' }
+                        : undefined
+                    }
+                  >
+                    ⚖️ {r.slice(0, 42)}…
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <label className="kx-field">
+              <span>Fundamentação / Motivo da Decisão (aparecerá no aviso oficial)</span>
+              <textarea
+                rows={3}
+                value={stkReason}
+                onChange={e => setStkReason(e.target.value)}
+                placeholder="Descreva o motivo da remoção ou alerta pelo STK..."
+                maxLength={240}
+                required
+              />
+            </label>
+
+            <div className="kx-modal-actions" style={{ justifyContent: 'space-between' }}>
+              {stkModalPost.stkAction ? (
+                <button
+                  type="button"
+                  className="kx-btn-outline"
+                  onClick={() => handleStkRestore(stkModalPost.id)}
+                  disabled={busy}
+                >
+                  ↩️ Devolver / Restaurar Postagem
+                </button>
+              ) : (
+                <span />
+              )}
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="button"
+                  className="kx-btn-ghost"
+                  onClick={() => setStkModalPost(null)}
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="kx-btn-primary kx-stk-submit" disabled={busy}>
+                  {busy
+                    ? 'Assinando...'
+                    : stkMode === 'remove'
+                      ? '⚖️ Ordenar Remoção pelo STK'
+                      : '⚖️ Aplicar Alerta do STK'}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Modal de Lista de Seguindo / Seguidores */}
       {followModal && (
@@ -1315,6 +1526,25 @@ export default function Social({ onBack, onGoTitulo }) {
                 <span>Meu Perfil</span>
               </button>
 
+              {myAccounts.isStk && (
+                <button
+                  type="button"
+                  className={`kx-nav-item kx-nav-stk${viewMode === 'stk' ? ' is-active' : ''}`}
+                  onClick={() => {
+                    setViewMode('stk');
+                    setViewingProfileId(null);
+                  }}
+                >
+                  <span className="kx-nav-icon"><Icon.Gavel /></span>
+                  <span>Plenário STK</span>
+                  {stkModeratedPosts.length > 0 && (
+                    <span className="kx-notif-pill" style={{ background: '#d97706' }}>
+                      {stkModeratedPosts.length}
+                    </span>
+                  )}
+                </button>
+              )}
+
               <button
                 type="button"
                 className="kx-nav-item"
@@ -1418,6 +1648,20 @@ export default function Social({ onBack, onGoTitulo }) {
               <strong>KATEX</strong>
             </div>
             <div style={{ display: 'flex', gap: 4 }}>
+              {myAccounts.isStk && (
+                <button
+                  type="button"
+                  className="kx-icon-btn"
+                  style={{ color: '#fbbf24' }}
+                  onClick={() => {
+                    setViewMode('stk');
+                    setViewingProfileId(null);
+                  }}
+                  title="Plenário do STK"
+                >
+                  <Icon.Gavel size={18} />
+                </button>
+              )}
               <button
                 type="button"
                 className="kx-icon-btn"
@@ -1428,6 +1672,179 @@ export default function Social({ onBack, onGoTitulo }) {
               </button>
             </div>
           </div>
+
+          {/* MODO ESPECIAL: PLENÁRIO DO STK (Gestão de Postagens Removidas e Marcadas) */}
+          {viewMode === 'stk' && myAccounts.isStk && (
+            <section className="kx-stk-plenario">
+              <header className="kx-profile-top-bar">
+                <div>
+                  <h2>⚖️ Plenário do Superior Tribunal Katequesense</h2>
+                  <small>
+                    Jurisdição Suprema · Gerencie as postagens removidas ou marcadas pelo STK
+                  </small>
+                </div>
+              </header>
+
+              <div className="kx-stk-accounts-bar">
+                <div>
+                  <span className="kx-kicker" style={{ color: '#fbbf24' }}>
+                    Perfis da Magistratura (Clique para configurar)
+                  </span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+                    <button
+                      type="button"
+                      className="kx-btn-outline"
+                      onClick={() => openProfileEditor('primary')}
+                    >
+                      ⚙️ Perfil Pessoal: {myAccounts.primary.name} (@{myAccounts.primary.handle})
+                    </button>
+                    <button
+                      type="button"
+                      className="kx-btn-outline"
+                      onClick={() => openProfileEditor('secondary')}
+                    >
+                      ⚙️ Perfil da Corte: {myAccounts.secondary?.name} (@
+                      {myAccounts.secondary?.handle})
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="kx-feed-tabs" style={{ position: 'static' }}>
+                <button
+                  type="button"
+                  className={`kx-feed-tab${stkFilter === 'all' ? ' is-active' : ''}`}
+                  onClick={() => setStkFilter('all')}
+                >
+                  <span>Todos os Autos ({stkModeratedPosts.length})</span>
+                </button>
+                <button
+                  type="button"
+                  className={`kx-feed-tab${stkFilter === 'removed' ? ' is-active' : ''}`}
+                  onClick={() => setStkFilter('removed')}
+                >
+                  <span>
+                    Removidas (
+                    {stkModeratedPosts.filter(p => p.stkAction?.status === 'removed').length})
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className={`kx-feed-tab${stkFilter === 'flagged' ? ' is-active' : ''}`}
+                  onClick={() => setStkFilter('flagged')}
+                >
+                  <span>
+                    Marcadas (
+                    {stkModeratedPosts.filter(p => p.stkAction?.status === 'flagged').length})
+                  </span>
+                </button>
+              </div>
+
+              <div className="kx-feed">
+                {(() => {
+                  const list = stkModeratedPosts.filter(p =>
+                    stkFilter === 'all' ? true : p.stkAction?.status === stkFilter,
+                  );
+                  if (list.length === 0) {
+                    return (
+                      <div className="kx-empty-feed">
+                        <div className="kx-empty-icon" style={{ color: '#fbbf24' }}>
+                          <Icon.Gavel size={26} />
+                        </div>
+                        <h3>Nenhum processo nos autos desta aba</h3>
+                        <p>
+                          Vá ao Feed e clique no ícone do martelo (<b>⚖️ STK</b>) em qualquer
+                          publicação para marcar com aviso ou remover por ordem judicial!
+                        </p>
+                      </div>
+                    );
+                  }
+                  return list.map(p => {
+                    const pAuthor = profilesMap.get(p.authorId);
+                    const isRemoved = p.stkAction?.status === 'removed';
+                    return (
+                      <article key={p.id} className="kx-post">
+                        <div className="kx-post-row">
+                          <ProfileAvatar
+                            profile={pAuthor}
+                            size="md"
+                            onClick={() => openUserProfile(p.authorId)}
+                          />
+                          <div className="kx-post-body">
+                            <header className="kx-post-head">
+                              <strong>{pAuthor?.name || p.authorId}</strong>
+                              <span className="kx-handle">@{pAuthor?.handle || p.authorId}</span>
+                              <span className="kx-dot">·</span>
+                              <time className="kx-time">{timeAgo(p.createdAt)}</time>
+                              <span
+                                className="kx-post-role"
+                                style={{
+                                  background: isRemoved
+                                    ? 'rgba(239,68,68,0.2)'
+                                    : 'rgba(245,158,11,0.2)',
+                                  color: isRemoved ? '#f87171' : '#fbbf24',
+                                }}
+                              >
+                                {isRemoved ? '🚫 REMOVIDA PELO STK' : '⚠️ MARCADA PELO STK'}
+                              </span>
+                            </header>
+
+                            <div className="kx-stk-secret-box">
+                              <small>Conteúdo original nos autos do STK:</small>
+                              <p>{p.text || '(Mídia / Enquete)'}</p>
+                            </div>
+
+                            <div
+                              className={
+                                isRemoved ? 'kx-stk-removed-banner' : 'kx-stk-flagged-banner'
+                              }
+                            >
+                              <strong>
+                                {isRemoved
+                                  ? '⚖️ ORDEM JUDICIAL DE REMOÇÃO'
+                                  : '⚠️ AVISO OFICIAL DO STK'}
+                              </strong>
+                              <p>
+                                {isRemoved
+                                  ? `Removida pelo STK por ordem do Ex.mo ${p.stkAction.ministerName}, pelo motivo: ${p.stkAction.reason}`
+                                  : `O STK está marcando esta publicação por ordem do Ex.mo ${p.stkAction.ministerName}, pelo motivo: ${p.stkAction.reason}`}
+                              </p>
+                            </div>
+
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+                              <button
+                                type="button"
+                                className="kx-btn-outline"
+                                onClick={() => handleStkRestore(p.id)}
+                                disabled={busy}
+                              >
+                                ↩️ Devolver / Restaurar ao Feed
+                              </button>
+                              <button
+                                type="button"
+                                className="kx-btn-outline"
+                                onClick={() => openStkModal(p)}
+                              >
+                                ⚖️ Alterar Despacho / Motivo
+                              </button>
+                              <button
+                                type="button"
+                                className="kx-btn-outline"
+                                style={{ color: '#f4212e', borderColor: 'rgba(244,33,46,0.4)' }}
+                                onClick={() => handleDeletePost(p.id)}
+                              >
+                                Excluir Definitivamente
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  });
+                })()}
+              </div>
+            </section>
+          )}
 
           {/* MODO 1: EXPLORAR & TRENDING TOPICS (Funciona no Mobile e no Desktop!) */}
           {viewMode === 'explore' && (
@@ -2165,19 +2582,32 @@ export default function Social({ onBack, onGoTitulo }) {
                               <span className="kx-post-role">{author.roleLabel}</span>
                             )}
 
-                            {isOwner && (
+                            {(isOwner || myAccounts.isStk) && (
                               <div className="kx-owner-actions">
-                                <button
-                                  type="button"
-                                  className="kx-icon-action"
-                                  onClick={() => {
-                                    setEditingPostId(post.id);
-                                    setEditingPostText(post.text || '');
-                                  }}
-                                  title="Editar publicação"
-                                >
-                                  <Icon.Edit size={14} />
-                                </button>
+                                {myAccounts.isStk && (
+                                  <button
+                                    type="button"
+                                    className="kx-stk-gavel-btn"
+                                    onClick={() => openStkModal(post)}
+                                    title="Poder Absoluto do STK: Marcar ou Remover Publicação"
+                                  >
+                                    <Icon.Gavel size={14} />
+                                    <span>STK</span>
+                                  </button>
+                                )}
+                                {isOwner && (
+                                  <button
+                                    type="button"
+                                    className="kx-icon-action"
+                                    onClick={() => {
+                                      setEditingPostId(post.id);
+                                      setEditingPostText(post.text || '');
+                                    }}
+                                    title="Editar publicação"
+                                  >
+                                    <Icon.Edit size={14} />
+                                  </button>
+                                )}
                                 <button
                                   type="button"
                                   className="kx-icon-action is-danger"
@@ -2190,108 +2620,187 @@ export default function Social({ onBack, onGoTitulo }) {
                             )}
                           </header>
 
-                          {isEditing ? (
-                            <form
-                              className="kx-edit-post-form"
-                              onSubmit={e => handleSaveEditedPost(e, post.id)}
-                            >
-                              <textarea
-                                rows={3}
-                                value={editingPostText}
-                                onChange={e => setEditingPostText(e.target.value)}
-                                maxLength={500}
-                                required
-                              />
-                              <div className="kx-edit-post-btns">
-                                <button
-                                  type="button"
-                                  className="kx-btn-ghost"
-                                  onClick={() => setEditingPostId(null)}
-                                >
-                                  Cancelar
-                                </button>
-                                <button type="submit" className="kx-post-btn" disabled={busy}>
-                                  Salvar
-                                </button>
+                          {/* Caso 1: Publicação Removida por Ordem do STK */}
+                          {post.stkAction?.status === 'removed' ? (
+                            <div className="kx-stk-removed-wrap">
+                              <div className="kx-stk-removed-banner">
+                                <strong>⚖️ DECISÃO OFICIAL · SUPERIOR TRIBUNAL KATEQUESENSE</strong>
+                                <p>
+                                  Removida pelo STK por ordem do Ex.mo{' '}
+                                  <b>{post.stkAction.ministerName}</b>, pelo motivo:{' '}
+                                  <b>{post.stkAction.reason}</b>
+                                </p>
                               </div>
-                            </form>
-                          ) : (
-                            <FormattedPostText
-                              text={post.text}
-                              onSelectHashtag={tag => {
-                                setViewMode('feed');
-                                setViewingProfileId(null);
-                                setSearchTag(tag);
-                              }}
-                              onSelectHandle={handleSelectHandle}
-                            />
-                          )}
 
-                          {/* Enquete Ao Vivo no Post */}
-                          {post.poll?.options && (
-                            <div className="kx-poll-box">
-                              {post.poll.options.map(opt => {
-                                const votesCount = opt.votes?.length || 0;
-                                const pct =
-                                  totalPollVotes > 0
-                                    ? Math.round((votesCount / totalPollVotes) * 100)
-                                    : 0;
-                                const iVoted = (opt.votes || []).includes(myAccounts.voterId);
-                                return (
-                                  <button
-                                    key={opt.id}
-                                    type="button"
-                                    className={`kx-poll-option${iVoted ? ' is-voted' : ''}`}
-                                    onClick={() => handleVotePoll(post.id, opt.id)}
-                                  >
-                                    <i
-                                      className="kx-poll-bar"
-                                      style={{ width: `${pct}%` }}
-                                    />
-                                    <span className="kx-poll-opt-text">
-                                      {opt.text} {iVoted && '✓'}
-                                    </span>
-                                    <strong className="kx-poll-opt-pct">
-                                      {pct}% ({votesCount})
-                                    </strong>
-                                  </button>
-                                );
-                              })}
-                              <small className="kx-poll-total">
-                                {totalPollVotes} {totalPollVotes === 1 ? 'voto' : 'votos'} na enquete · Clique para votar
-                              </small>
-                            </div>
-                          )}
-
-                          {post.mediaUrl && (
-                            <div className="kx-post-media">
-                              {post.mediaKind === 'video' || /\.(mp4|webm|ogg)$/i.test(post.mediaUrl) ? (
-                                <video src={post.mediaUrl} controls playsInline />
-                              ) : (
-                                <img src={post.mediaUrl} alt="Mídia da publicação" loading="lazy" />
+                              {myAccounts.isStk && (
+                                <div className="kx-stk-secret-box">
+                                  <small>
+                                    👁️ Conteúdo retido (visível apenas para o Ministro do STK):
+                                  </small>
+                                  <p>{post.text || '(Publicação com mídia / enquete)'}</p>
+                                  <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                                    <button
+                                      type="button"
+                                      className="kx-switch-inline"
+                                      onClick={() => handleStkRestore(post.id)}
+                                    >
+                                      ↩️ Devolver Postagem
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="kx-switch-inline"
+                                      onClick={() => openStkModal(post)}
+                                    >
+                                      ⚖️ Gerenciar Despacho
+                                    </button>
+                                  </div>
+                                </div>
                               )}
                             </div>
-                          )}
+                          ) : (
+                            <>
+                              {isEditing ? (
+                                <form
+                                  className="kx-edit-post-form"
+                                  onSubmit={e => handleSaveEditedPost(e, post.id)}
+                                >
+                                  <textarea
+                                    rows={3}
+                                    value={editingPostText}
+                                    onChange={e => setEditingPostText(e.target.value)}
+                                    maxLength={500}
+                                    required
+                                  />
+                                  <div className="kx-edit-post-btns">
+                                    <button
+                                      type="button"
+                                      className="kx-btn-ghost"
+                                      onClick={() => setEditingPostId(null)}
+                                    >
+                                      Cancelar
+                                    </button>
+                                    <button type="submit" className="kx-post-btn" disabled={busy}>
+                                      Salvar
+                                    </button>
+                                  </div>
+                                </form>
+                              ) : (
+                                <FormattedPostText
+                                  text={post.text}
+                                  onSelectHashtag={tag => {
+                                    setViewMode('feed');
+                                    setViewingProfileId(null);
+                                    setSearchTag(tag);
+                                  }}
+                                  onSelectHandle={handleSelectHandle}
+                                />
+                              )}
 
-                          {/* Card de Publicação Citada (Quote Post) */}
-                          {embeddedQuote && (
-                            <div
-                              className="kx-quoted-card is-clickable"
-                              onClick={() => openUserProfile(embeddedQuote.authorId)}
-                              role="button"
-                              tabIndex={0}
-                            >
-                              <div className="kx-quoted-head">
-                                <strong>{embeddedAuthor?.name || embeddedQuote.authorId}</strong>
-                                <AccountBadge profile={embeddedAuthor} />
-                                <span className="kx-handle">
-                                  @{embeddedAuthor?.handle || embeddedQuote.authorId}
-                                </span>
-                                <span className="kx-dot">·</span>
-                                <time className="kx-time">{timeAgo(embeddedQuote.createdAt)}</time>
-                              </div>
-                              <p>{embeddedQuote.text}</p>
-                            </div>
+                              {/* Caso 2: Publicação Marcada com Aviso pelo STK */}
+                              {post.stkAction?.status === 'flagged' && (
+                                <div className="kx-stk-flagged-banner">
+                                  <strong>
+                                    ⚠️ AVISO OFICIAL DO SUPERIOR TRIBUNAL KATEQUESENSE (STK)
+                                  </strong>
+                                  <p>
+                                    O STK está marcando esta publicação por ordem do Ex.mo{' '}
+                                    <b>{post.stkAction.ministerName}</b>, pelo motivo:{' '}
+                                    <b>{post.stkAction.reason}</b>
+                                  </p>
+                                  {myAccounts.isStk && (
+                                    <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                                      <button
+                                        type="button"
+                                        className="kx-switch-inline"
+                                        onClick={() => handleStkRestore(post.id)}
+                                      >
+                                        ↩️ Retirar Marcação
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="kx-switch-inline"
+                                        onClick={() => openStkModal(post)}
+                                      >
+                                        ⚖️ Editar / Converter em Remoção
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Enquete Ao Vivo no Post */}
+                              {post.poll?.options && (
+                                <div className="kx-poll-box">
+                                  {post.poll.options.map(opt => {
+                                    const votesCount = opt.votes?.length || 0;
+                                    const pct =
+                                      totalPollVotes > 0
+                                        ? Math.round((votesCount / totalPollVotes) * 100)
+                                        : 0;
+                                    const iVoted =
+                                      (opt.votes || []).includes(myAccounts.voterId) ||
+                                      (opt.votes || []).includes(activeProfile?.id);
+                                    return (
+                                      <button
+                                        key={opt.id}
+                                        type="button"
+                                        className={`kx-poll-option${iVoted ? ' is-voted' : ''}`}
+                                        onClick={() => handleVotePoll(post.id, opt.id)}
+                                      >
+                                        <i
+                                          className="kx-poll-bar"
+                                          style={{ width: `${pct}%` }}
+                                        />
+                                        <span className="kx-poll-opt-text">
+                                          {opt.text} {iVoted && '✓'}
+                                        </span>
+                                        <strong className="kx-poll-opt-pct">
+                                          {pct}% ({votesCount})
+                                        </strong>
+                                      </button>
+                                    );
+                                  })}
+                                  <small className="kx-poll-total">
+                                    {totalPollVotes} {totalPollVotes === 1 ? 'voto' : 'votos'} na enquete · Clique para votar
+                                  </small>
+                                </div>
+                              )}
+
+                              {post.mediaUrl && (
+                                <div className="kx-post-media">
+                                  {post.mediaKind === 'video' || /\.(mp4|webm|ogg)$/i.test(post.mediaUrl) ? (
+                                    <video src={post.mediaUrl} controls playsInline />
+                                  ) : (
+                                    <img src={post.mediaUrl} alt="Mídia da publicação" loading="lazy" />
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Card de Publicação Citada (Quote Post) */}
+                              {embeddedQuote && (
+                                <div
+                                  className="kx-quoted-card is-clickable"
+                                  onClick={() => openUserProfile(embeddedQuote.authorId)}
+                                  role="button"
+                                  tabIndex={0}
+                                >
+                                  <div className="kx-quoted-head">
+                                    <strong>{embeddedAuthor?.name || embeddedQuote.authorId}</strong>
+                                    <AccountBadge profile={embeddedAuthor} />
+                                    <span className="kx-handle">
+                                      @{embeddedAuthor?.handle || embeddedQuote.authorId}
+                                    </span>
+                                    <span className="kx-dot">·</span>
+                                    <time className="kx-time">{timeAgo(embeddedQuote.createdAt)}</time>
+                                  </div>
+                                  <p>
+                                    {embeddedQuote.stkAction?.status === 'removed'
+                                      ? `Removida pelo STK por ordem do Ex.mo ${embeddedQuote.stkAction.ministerName}, pelo motivo: ${embeddedQuote.stkAction.reason}`
+                                      : embeddedQuote.text}
+                                  </p>
+                                </div>
+                              )}
+                            </>
                           )}
 
                           <footer className="kx-post-actions">

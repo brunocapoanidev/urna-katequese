@@ -676,17 +676,19 @@ input { font: inherit; padding: 13px; border-radius: 10px; border: 1px solid #c9
   }
   .number-row {
     margin-bottom: 10px;
-    gap: 8px;
+    gap: 4px;
+    flex-wrap: wrap;
   }
   .number-label {
-    font-size: 0.82rem;
-    min-width: 50px;
+    font-size: 0.76rem;
+    min-width: auto;
+    width: 100%;
   }
   .number-box {
-    width: 36px;
-    height: 46px;
-    font-size: 1.85rem;
-    line-height: 42px;
+    width: 34px;
+    height: 44px;
+    font-size: 1.75rem;
+    line-height: 40px;
   }
   .detail-row {
     grid-template-columns: 54px minmax(0, 1fr);
