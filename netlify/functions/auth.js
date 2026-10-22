@@ -1,4 +1,4 @@
-import { store, data, json, bad, body, handler, attempts, digest, isDev, safeEqual, token, phase, fmt } from './_lib.js';
+import { store, data, json, bad, body, handler, attempts, digest, isDev, safeEqual, token, phase, fmt, participationPrefix } from './_lib.js';
 import { ADMIN_TTL_MS } from './_crypto.js';
 import { findVoterByCode, normCode } from './_voters.js';
 
@@ -30,7 +30,7 @@ export default handler(async req => {
   // O eleitor de teste só existe no ambiente local; em produção ele não entra.
   if (!voter || (voter.testOnly && !isDev())) {
     await limit.fail();
-    return bad('Nome ou código inválido.', 401);
+    return bad('Código individual inválido.', 401);
   }
   await limit.clear();
 
@@ -38,12 +38,13 @@ export default handler(async req => {
 
   if (voter.testOnly) return json({ token: await token({ role: 'voter', voterId: voter.id, testOnly: true }), name: voter.name });
 
-  const participation = await store.get(`participation/${await digest(voter.id)}`, { type: 'json' });
+  const round = d.config.round || 1;
+  const participation = await store.get(`${participationPrefix(round)}${await digest(voter.id)}`, { type: 'json' });
   if (participation?.state === 'done') {
-    return bad('Voto já registrado! Você já participou desta eleição e não poderá votar novamente.', 409);
+    return bad(`Voto já registrado no ${round}º turno! Você já participou desta etapa.`, 409);
   }
   const state = phase(d.config);
   if (state === 'scheduled') return bad(`A votação ainda não começou. Ela abre ${fmt(d.config.opensAt)}.`, 403);
   if (state !== 'open') return bad('A votação está encerrada.', 403);
-  return json({ token: await token({ role: 'voter', voterId: voter.id }), name: voter.name });
+  return json({ token: await token({ role: 'voter', voterId: voter.id, round }), name: voter.name });
 });

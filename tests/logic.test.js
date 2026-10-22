@@ -106,3 +106,41 @@ describe('voto nulo', () => {
     expect(r.elected).toEqual(['d1']);
   });
 });
+
+describe('regras JEK: 4 deputados eleitos e 2º turno', () => {
+  it('elege por padrão os 4 deputados mais votados', () => {
+    const votes = [
+      vote('a', 'd1'), vote('a', 'd1'), vote('a', 'd1'),
+      vote('b', 'd2'), vote('b', 'd2'),
+      vote('c', 'd3'), vote('c', 'd3'),
+      vote('a', 'd4'),
+    ];
+    const r = tally(votes, presidents, deputies);
+    expect(r.seats).toBe(4);
+    expect(r.elected).toEqual(['d1', 'd3', 'd2', 'd4']);
+  });
+
+  it('habilita 2º turno quando ninguém passa de 50% dos votos válidos no 1º turno', () => {
+    const votes = [
+      vote('a', 'd1'), vote('a', 'd1'),
+      vote('b', 'd2'), vote('b', 'd2'),
+      vote('c', 'd3'),
+    ];
+    const r = tally(votes, presidents, deputies, 4, 1);
+    expect(r.secondRound).toBe(true);
+    expect(r.firstRoundWinner).toBeNull();
+    expect(r.runoff).toEqual(['b', 'a']);
+  });
+
+  it('elege em 1º turno quando o líder supera 50% dos votos válidos', () => {
+    const votes = [
+      vote('a', 'd1'), vote('a', 'd1'), vote('a', 'd1'),
+      vote('b', 'd2'),
+      vote('c', 'd3'),
+    ];
+    const r = tally(votes, presidents, deputies, 4, 1);
+    expect(r.secondRound).toBe(false);
+    expect(r.firstRoundWinner).toBe('a');
+    expect(r.runoff).toEqual([]);
+  });
+});
