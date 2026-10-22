@@ -1,0 +1,584 @@
+.et-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 50% 0%, #1b3155 0%, #0f1c31 65%, #09111f 100%);
+  color: #f6f4ee;
+  font-family: 'Archivo', system-ui, sans-serif;
+  padding-bottom: 48px;
+  overflow-x: hidden;
+}
+
+.et-page *, .et-page *::before, .et-page *::after {
+  box-sizing: border-box;
+}
+
+.et-wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.et-top {
+  background: rgba(12, 22, 38, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.et-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.et-back {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font: 700 13px 'Archivo', sans-serif;
+  cursor: pointer;
+}
+.et-back:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.et-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.et-brand-badge {
+  background: #f2b705;
+  color: #12213a;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+}
+
+.et-brand strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.et-main {
+  padding-top: 28px;
+}
+
+/* Carteirinha Oficial do Título de Eleitor Katequista */
+.et-card-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.et-document {
+  background: linear-gradient(155deg, #f3f0e2 0%, #e5dfc9 55%, #dad2b6 100%);
+  color: #16261c;
+  border: 3px solid #2b4c37;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  position: relative;
+}
+
+.et-doc-header {
+  background: linear-gradient(135deg, #1b432c 0%, #122e1e 100%);
+  color: #f6f4ee;
+  padding: 18px 20px;
+  border-bottom: 4px solid #f2b705;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.et-doc-coat {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f2b705;
+  color: #12213a;
+  font-weight: 900;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.et-doc-titles {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.et-doc-republic {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #f2b705;
+}
+
+.et-doc-titles h2 {
+  margin: 0;
+  font-size: clamp(18px, 3.2vw, 23px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+.et-doc-titles small {
+  font-size: 10.5px;
+  color: #b7d1c1;
+  letter-spacing: 0.05em;
+}
+
+.et-doc-status {
+  background: #276741;
+  border: 1.5px solid #68d391;
+  color: #e6fffa;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 5px 11px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+.et-doc-status.is-voted {
+  background: #f2b705;
+  border-color: #fff;
+  color: #12213a;
+}
+
+.et-doc-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.et-doc-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.et-field {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid #b8b096;
+  border-radius: 10px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.et-field span {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #46574c;
+}
+
+.et-field strong {
+  font-size: 15px;
+  font-weight: 900;
+  color: #112217;
+  font-variant-numeric: tabular-nums;
+}
+
+.et-field-name strong {
+  font-size: 20px;
+  letter-spacing: 0.02em;
+}
+
+.et-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.et-doc-qr-box {
+  background: #fff;
+  border: 2px solid #2b4c37;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #12213a;
+}
+
+.et-qr-svg {
+  width: 88px;
+  height: 88px;
+}
+
+.et-doc-qr-box small {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #2b4c37;
+}
+
+/* Cofre do Código Individual Secreto */
+.et-code-vault {
+  background: #12213a;
+  color: #f6f4ee;
+  padding: 16px 20px;
+  border-top: 2px dashed #4a5d7c;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.et-code-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.et-code-info span {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  color: #b9c3d6;
+}
+
+.et-secret-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #f2b705;
+}
+
+.et-code-info small {
+  font-size: 11.5px;
+  color: #9aa8c2;
+}
+
+.et-code-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.et-btn-sm {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: 800 12px 'Archivo', sans-serif;
+  cursor: pointer;
+}
+.et-btn-gold {
+  background: #f2b705;
+  border-color: #f2b705;
+  color: #12213a;
+}
+
+.et-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.et-action-primary, .et-action-whatsapp, .et-action-ghost {
+  min-height: 48px;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font: 800 15px 'Archivo', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  text-align: center;
+}
+
+.et-action-primary {
+  background: #f2b705;
+  color: #12213a;
+}
+.et-action-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.et-action-whatsapp {
+  background: #1fa855;
+  color: #fff;
+}
+
+.et-action-ghost {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+/* Balcão de Emissão dos 19 Eleitores */
+.et-desk {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.et-desk-head {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.et-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #f2b705;
+}
+
+.et-desk-head h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.et-desk-head p {
+  margin: 0;
+  color: #cbd5e6;
+  font-size: 14.5px;
+  max-width: 720px;
+}
+
+.et-desk-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.et-desk-tab {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #dbe3f0;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font: 800 13px 'Archivo', sans-serif;
+  cursor: pointer;
+}
+.et-desk-tab.is-active {
+  background: #f2b705;
+  border-color: #f2b705;
+  color: #12213a;
+}
+
+/* Card Modal de PIN / Código */
+.et-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(6, 12, 24, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.et-modal-card {
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  color: #12213a;
+  border-radius: 18px;
+  padding: 20px;
+  border-top: 5px solid #f2b705;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
+}
+
+.et-modal-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.et-modal-card h3 {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.et-modal-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.et-close-btn {
+  background: #f1efe8;
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font: 800 12px 'Archivo', sans-serif;
+  color: #12213a;
+  cursor: pointer;
+}
+
+.et-error {
+  margin: 0;
+  color: #b3261e;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+/* Grid dos 19 Eleitores */
+.et-voters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 12px;
+}
+
+.et-voter-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+.et-voter-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(242, 183, 5, 0.55);
+}
+.et-voter-item.is-selected {
+  border-color: #f2b705;
+  background: rgba(242, 183, 5, 0.14);
+}
+
+.et-voter-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: #f2b705;
+  color: #12213a;
+  font-weight: 900;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.et-voter-item.is-claimed .et-voter-avatar {
+  background: #2e4268;
+  color: #cbd5e6;
+}
+
+.et-voter-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.et-voter-info strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.et-voter-info small {
+  font-size: 11px;
+  color: #9aa8c2;
+  font-variant-numeric: tabular-nums;
+}
+
+.et-voter-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.et-tag-status {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+.et-tag-status.is-locked {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e6;
+}
+
+.et-tag-voted {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #f2b705;
+  color: #12213a;
+}
+
+@media (max-width: 600px) {
+  .et-doc-body {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 12px;
+  }
+  .et-doc-qr-box {
+    display: none;
+  }
+  .et-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .et-field strong {
+    font-size: 13.5px;
+  }
+  .et-field-name strong {
+    font-size: 17px;
+  }
+  .et-code-vault {
+    padding: 14px;
+  }
+  .et-secret-code {
+    font-size: 22px;
+  }
+}

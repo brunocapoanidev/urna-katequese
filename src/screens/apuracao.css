@@ -1,0 +1,1207 @@
+@import url('https://fonts.googleapis.com/css2?family=Faustina:ital,wght@0,400..700;1,400..600&display=swap');
+
+.ap-root {
+  --ap-bg: #0f0e0d;
+  --ap-panel: #151412;
+  --ap-panel-2: #1b1a17;
+  --ap-panel-3: #22201d;
+  --ap-line: rgba(250, 250, 249, 0.08);
+  --ap-line-2: rgba(250, 250, 249, 0.16);
+  --ap-line-3: rgba(250, 250, 249, 0.26);
+  --ap-fg: #fafaf9;
+  --ap-fg-2: #d6d4cf;
+  --ap-fg-3: #a6a39c;
+  --ap-fg-4: #78756e;
+  --ap-serif: 'Faustina', Georgia, 'Times New Roman', serif;
+  --ap-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--ap-bg);
+  background-image: radial-gradient(1100px 650px at 68% -10%, #1d1b16 0%, rgba(15, 14, 13, 0) 65%);
+  color: var(--ap-fg);
+  font-family: var(--ap-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ap-root *, .ap-root *::before, .ap-root *::after {
+  box-sizing: border-box;
+}
+
+.ap-tn {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barra superior estilo seuimposto.com */
+.ap-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(15, 14, 13, 0.88);
+  backdrop-filter: blur(18px) saturate(1.15);
+  border-bottom: 1px solid var(--ap-line);
+  padding: 10px 18px;
+}
+
+.ap-top-in {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+}
+
+.ap-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ap-back-btn {
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line-2);
+  color: var(--ap-fg-2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font: 600 13px var(--ap-sans);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ap-back-btn:hover {
+  background: var(--ap-panel-3);
+  color: #fff;
+}
+
+.ap-brand-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ap-brand-title strong {
+  font-family: var(--ap-serif);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ap-fg);
+}
+
+.ap-brand-title span {
+  font-size: 12px;
+  color: var(--ap-fg-3);
+}
+
+/* Abas centrais (Presidente | Deputados) */
+.ap-tabs {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ap-panel);
+  border: 1px solid var(--ap-line);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.ap-tab {
+  border: 0;
+  background: transparent;
+  color: var(--ap-fg-3);
+  font: 600 13px var(--ap-sans);
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ap-tab:hover {
+  color: var(--ap-fg);
+}
+.ap-tab.is-active {
+  background: var(--ap-panel-3);
+  color: var(--ap-fg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Controles à direita */
+.ap-top-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.ap-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--ap-fg-2);
+}
+
+.ap-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #85827c;
+}
+.ap-dot.is-live {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+  animation: ap-pulse 1.2s ease-in-out infinite;
+}
+.ap-dot.is-done {
+  background: #f59e0b;
+}
+
+@keyframes ap-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.88); }
+}
+
+.ap-sim-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #0f0e0d;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font: 800 13px var(--ap-sans);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+  transition: filter 0.15s, transform 0.1s;
+}
+.ap-sim-btn:hover {
+  filter: brightness(1.08);
+}
+.ap-sim-btn:active {
+  transform: translateY(1px);
+}
+
+.ap-ghost-btn {
+  background: var(--ap-panel);
+  border: 1px solid var(--ap-line-2);
+  color: var(--ap-fg-2);
+  border-radius: 8px;
+  padding: 6px 11px;
+  font: 600 12px var(--ap-sans);
+  cursor: pointer;
+}
+.ap-ghost-btn:hover {
+  background: var(--ap-panel-2);
+  color: #fff;
+}
+
+/* Grid Principal de 3 Colunas estilo seuimposto.com */
+.ap-grid {
+  flex: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 14px 18px 24px;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr) 330px;
+  gap: 14px;
+  align-items: start;
+}
+
+.ap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ap-card {
+  background: var(--ap-panel);
+  border: 1px solid var(--ap-line);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Coluna Esquerda: Card Principal de Disputa */
+.ap-kicker {
+  font-size: 12px;
+  color: var(--ap-fg-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ap-sim-badge {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ap-headline {
+  font-family: var(--ap-serif);
+  font-size: clamp(24px, 2.4vw, 31px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ap-fg);
+  margin: 0;
+}
+
+/* Frente a Frente (Top 2) */
+.ap-duel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.ap-duel-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ap-duel-side.is-right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.ap-cand-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.ap-duel-side.is-right .ap-cand-chip {
+  flex-direction: row-reverse;
+}
+
+.ap-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background-color: #272624;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  flex: none;
+  border: 2px solid var(--cand-color, #fff);
+}
+
+.ap-cand-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.ap-cand-meta strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ap-fg);
+}
+.ap-cand-meta span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cand-color, var(--ap-fg-3));
+}
+
+.ap-big-pct {
+  font-family: var(--ap-serif);
+  font-size: clamp(34px, 3.2vw, 44px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ap-fg);
+}
+.ap-big-pct sup {
+  font-size: 0.48em;
+  font-weight: 400;
+  color: var(--ap-fg-3);
+}
+
+.ap-vote-sub {
+  font-size: 12px;
+  color: var(--ap-fg-3);
+}
+
+/* Barra de 50% (Cabo de Guerra estilo seuimposto.com) */
+.ap-half-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0 2px;
+}
+
+.ap-half-marker-row {
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--ap-fg-3);
+  letter-spacing: 0.04em;
+}
+
+.ap-half-track {
+  position: relative;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--ap-panel-3);
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.ap-half-track::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--ap-fg);
+  z-index: 2;
+}
+
+.ap-half-fill-left, .ap-half-fill-right {
+  height: 100%;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap-half-captions {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+/* Linhas de vantagem e por apurar */
+.ap-stat-rows {
+  border-top: 1px solid var(--ap-line);
+  border-bottom: 1px solid var(--ap-line);
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ap-stat-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+.ap-stat-line span {
+  color: var(--ap-fg-3);
+}
+.ap-stat-line strong {
+  color: var(--ap-fg-2);
+  font-weight: 600;
+}
+
+/* Lista dos demais candidatos (3º colocado, etc.) */
+.ap-other-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ap-other-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ap-other-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ap-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #272624;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  border: 2px solid var(--cand-color, #fff);
+  flex: none;
+}
+
+.ap-other-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.ap-other-info strong {
+  font-size: 13px;
+  color: var(--ap-fg);
+}
+.ap-other-info span {
+  font-size: 11px;
+  color: var(--cand-color, var(--ap-fg-3));
+  font-weight: 700;
+}
+
+.ap-other-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.ap-other-right strong {
+  font-size: 14px;
+  color: var(--ap-fg);
+}
+.ap-other-right small {
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+/* Rodapé de métricas do card (Votos válidos | Comparecimento | Brancos e nulos) */
+.ap-card-metrics {
+  border-top: 1px solid var(--ap-line);
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.ap-card-metrics > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ap-card-metrics span {
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+.ap-card-metrics strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ap-fg);
+}
+
+/* Gráfico "Ao longo da apuração" */
+.ap-chart-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ap-chart-head h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ap-fg);
+}
+.ap-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11.5px;
+  color: var(--ap-fg-2);
+}
+.ap-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ap-chart-legend i {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.ap-chart-svg {
+  width: 100%;
+  height: 140px;
+  display: block;
+}
+
+/* Coluna Central: Mapa Interativo + 19 Urnas/Seções + Scrubber de Horário */
+.ap-center-card {
+  min-height: 630px;
+  justify-content: space-between;
+  position: relative;
+}
+
+.ap-center-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ap-line);
+}
+
+.ap-subpills {
+  display: flex;
+  gap: 6px;
+}
+.ap-subpill {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ap-fg-3);
+  padding: 5px 11px;
+  border-radius: 999px;
+  font: 600 12px var(--ap-sans);
+  cursor: pointer;
+}
+.ap-subpill.is-active {
+  background: var(--ap-panel-3);
+  border-color: var(--ap-line-2);
+  color: var(--ap-fg);
+}
+
+.ap-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--ap-fg-2);
+}
+.ap-map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ap-map-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* Palco Central do Mapa e das 19 Seções */
+.ap-map-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.ap-brazil-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 630px;
+  margin: 0 auto;
+}
+
+.ap-map-tooltip {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  z-index: 5;
+  background: rgba(21, 20, 18, 0.92);
+  border: 1px solid var(--ap-line-2);
+  border-radius: 9px;
+  padding: 6px 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ap-fg);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+.ap-map-tooltip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ap-fg-2);
+}
+.ap-map-tooltip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ap-brazil-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.6));
+}
+
+.ap-state-shape {
+  stroke: #0f0e0d;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transition: fill 0.4s ease, fill-opacity 0.35s ease, filter 0.15s ease;
+  cursor: pointer;
+}
+.ap-state-shape:hover {
+  filter: brightness(1.22);
+  stroke: rgba(250, 250, 249, 0.55);
+}
+
+.ap-map-label-group {
+  pointer-events: none;
+}
+
+.ap-state-label {
+  fill: #fafaf9;
+  font: 800 10.5px var(--ap-sans);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(15, 14, 13, 0.82);
+  stroke-width: 2.6px;
+  stroke-linejoin: round;
+}
+.ap-state-sub {
+  fill: #fafaf9;
+  font: 700 9.5px var(--ap-sans);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(15, 14, 13, 0.85);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+
+.ap-callout-group {
+  cursor: pointer;
+}
+.ap-callout-group:hover rect {
+  filter: brightness(1.16);
+}
+.ap-callout-uf {
+  fill: #fafaf9;
+  font: 800 10.5px var(--ap-sans);
+}
+.ap-callout-pct {
+  fill: #fafaf9;
+  font: 700 10.5px var(--ap-sans);
+  text-anchor: end;
+}
+
+/* Grid das 19 Seções / Urnas Individuais da Katequese */
+.ap-secoes-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ap-secoes-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--ap-fg-3);
+}
+
+.ap-urnas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+  gap: 6px;
+}
+
+.ap-urna-cell {
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line);
+  border-radius: 8px;
+  padding: 6px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: transform 0.2s ease, background-color 0.35s ease, border-color 0.35s ease;
+}
+.ap-urna-cell.is-counted {
+  transform: translateY(-1px);
+}
+.ap-urna-cell-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--ap-fg-3);
+}
+.ap-urna-cell strong {
+  font-size: 11px;
+  color: var(--ap-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Barra de Timeline Inferior estilo seuimposto.com */
+.ap-timeline {
+  border-top: 1px solid var(--ap-line);
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.ap-time-clock {
+  font: 700 13px var(--ap-sans);
+  color: var(--ap-fg);
+  min-width: 58px;
+}
+
+.ap-scrubber-wrap {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ap-scrubber {
+  width: 100%;
+  accent-color: #fafaf9;
+  cursor: pointer;
+  height: 5px;
+}
+
+.ap-scrubber-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ap-fg-4);
+}
+
+.ap-viewers {
+  font-size: 11.5px;
+  color: var(--ap-fg-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Coluna Direita: Por Região / Zonas & Últimas Atualizações */
+.ap-side-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ap-side-head h3 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ap-fg);
+}
+.ap-side-head span {
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+.ap-region-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.ap-region-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ap-line);
+}
+.ap-region-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.ap-region-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ap-region-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ap-fg);
+}
+
+.ap-region-leader {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+
+.ap-region-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #272624;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+}
+
+.ap-region-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+.ap-region-mini-bar {
+  width: 78px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--ap-panel-3);
+  overflow: hidden;
+  display: flex;
+}
+
+/* Feed "Últimas atualizações" com anel circular */
+.ap-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ap-feed-item {
+  display: grid;
+  grid-template-columns: 38px 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ap-line);
+}
+.ap-feed-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.ap-feed-time {
+  color: var(--ap-fg-3);
+  font-size: 11px;
+}
+
+.ap-feed-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--ap-line-2);
+  border-top-color: var(--ap-fg);
+}
+
+.ap-feed-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.ap-feed-copy strong {
+  color: var(--ap-fg);
+  font-size: 12px;
+}
+.ap-feed-copy span {
+  color: var(--ap-fg-3);
+  font-size: 11.5px;
+}
+
+/* Hemiciclo e Disputa das 4 Vagas de Deputado */
+.ap-dep-Seats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.ap-dep-seat-card {
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line);
+  border-radius: 11px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  position: relative;
+}
+.ap-dep-seat-card.is-elected {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.09) 0%, var(--ap-panel-2) 100%);
+}
+
+.ap-dep-seat-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ap-fg-3);
+}
+.ap-dep-seat-tag.is-elected {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+/* Hemiciclo Semicircular Parlamentar (4 Cadeiras) */
+.ap-party-seats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ap-party-seat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: var(--ap-fg-2);
+}
+.ap-party-seat-pill i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.ap-hemicycle-wrap {
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.ap-hemicycle-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ap-hemicycle-num {
+  fill: var(--ap-fg);
+  font-family: var(--ap-serif);
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.ap-hemicycle-sub {
+  fill: var(--ap-fg-3);
+  font-size: 11px;
+}
+
+.ap-dep-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ap-dep-rank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line);
+}
+.ap-dep-rank-row.is-elected {
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+/* Alertas de Virada, Definição Matemática e Botão de 2º Turno */
+.ap-virada-alert {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  border-radius: 9px;
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ap-math-badge {
+  border-radius: 9px;
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.ap-math-badge.is-elected {
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  color: #4ade80;
+}
+.ap-math-badge.is-runoff {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #93c5fd;
+}
+
+.ap-runoff-trigger-btn {
+  width: 100%;
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: 800 13px var(--ap-sans);
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+  transition: filter 0.15s;
+}
+.ap-runoff-trigger-btn:hover {
+  filter: brightness(1.08);
+}
+
+/* Legendas de Escala e Filtro por Candidato no Mapa */
+.ap-scale-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.ap-scale-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.ap-scale-legend small {
+  margin-left: 5px;
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+.ap-cand-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ap-cand-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--ap-panel-2);
+  border: 1px solid var(--ap-line);
+  color: var(--ap-fg-2);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: 700 11.5px var(--ap-sans);
+  cursor: pointer;
+}
+.ap-cand-filter-btn.is-active {
+  background: var(--ap-panel-3);
+  border-color: var(--ap-fg);
+  color: #fff;
+}
+.ap-cand-filter-btn i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Inspetor de Raio-X por UF no Mapa */
+.ap-uf-inspector {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 6;
+  min-width: 195px;
+  background: rgba(21, 20, 18, 0.94);
+  border: 1px solid var(--ap-line-2);
+  border-radius: 11px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+.ap-uf-inspector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ap-line);
+  font-size: 12px;
+}
+.ap-uf-inspector-head span {
+  font-size: 11px;
+  color: var(--ap-fg-3);
+}
+
+.ap-uf-close {
+  background: transparent;
+  border: 0;
+  color: var(--ap-fg-3);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 2px;
+}
+.ap-uf-close:hover {
+  color: #fff;
+}
+
+.ap-uf-inspector-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ap-uf-inspector-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11.5px;
+}
+.ap-uf-inspector-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ap-fg-2);
+}
+.ap-uf-inspector-row i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.ap-state-shape.is-selected {
+  stroke: #fafaf9;
+  stroke-width: 2.2;
+  filter: brightness(1.18);
+}
+
+@media (max-width: 1160px) {
+  .ap-grid {
+    grid-template-columns: 340px minmax(0, 1fr);
+  }
+  .ap-col-right {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .ap-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .ap-center-card {
+    min-height: auto;
+  }
+}
