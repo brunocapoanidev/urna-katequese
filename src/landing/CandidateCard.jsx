@@ -1,6 +1,10 @@
 const photoStyle = c =>
   c.photo
-    ? { backgroundImage: `url(${c.photo})`, backgroundPosition: `${c.photoPosition || '50%'} center` }
+    ? {
+        backgroundImage: `url(${c.photo})`,
+        backgroundPosition: `${c.photoPosition || '50%'} center`,
+        backgroundSize: c.photoSize || undefined,
+      }
     : undefined;
 
 function Photo({ candidate, className }) {
@@ -21,26 +25,57 @@ function Photo({ candidate, className }) {
   );
 }
 
-function Deputy({ deputy }) {
+function Deputy({ deputy, isSaved, onPick }) {
   return (
-    <li className="lp-deputy">
+    <li className={`lp-deputy${isSaved ? ' is-saved' : ''}`}>
       <Photo candidate={deputy} className="lp-photo-sm" />
-      <span className="lp-deputy-name">{deputy.name}</span>
+      <div className="lp-deputy-info">
+        <span className="lp-deputy-name">{deputy.name}</span>
+        {onPick && (
+          <button
+            type="button"
+            className={`lp-pin-btn${isSaved ? ' is-active' : ''}`}
+            onClick={() => onPick(deputy)}
+          >
+            {isSaved ? '✓ Na colinha' : '+ Colinha'}
+          </button>
+        )}
+      </div>
       <span className="lp-deputy-number">{deputy.number}</span>
     </li>
   );
 }
 
-export default function CandidateCard({ president, deputies }) {
+export default function CandidateCard({
+  president,
+  deputies,
+  isRunoffFinalist = false,
+  savedPresidentId,
+  savedDeputyId,
+  onPickPresident,
+  onPickDeputy,
+}) {
   const { name, number, party, slogan } = president;
+  const isPresSaved = savedPresidentId === president.id;
+
   return (
-    <article className="lp-card" aria-labelledby={`cand-${president.id}`}>
+    <article className={`lp-card${isRunoffFinalist ? ' is-finalist' : ''}${isPresSaved ? ' is-saved' : ''}`} aria-labelledby={`cand-${president.id}`}>
       <div className="lp-card-media">
         <Photo candidate={president} className="lp-photo-lg" />
+        {isRunoffFinalist && <span className="lp-finalist-badge">Finalista · 2º Turno</span>}
         <div className="lp-number">
           <span>Número</span>
           <strong>{number}</strong>
         </div>
+        {onPickPresident && (
+          <button
+            type="button"
+            className={`lp-card-pin${isPresSaved ? ' is-active' : ''}`}
+            onClick={() => onPickPresident(president)}
+          >
+            {isPresSaved ? '✓ Presidente na Colinha' : '📌 Anotar na Colinha'}
+          </button>
+        )}
       </div>
 
       <div className="lp-card-body">
@@ -52,10 +87,15 @@ export default function CandidateCard({ president, deputies }) {
 
         {deputies.length > 0 && (
           <div className="lp-ticket">
-            <span className="lp-kicker">Deputados da chapa</span>
+            <span className="lp-kicker">Deputados da chapa (4 de 6 são eleitos)</span>
             <ul>
               {deputies.map(d => (
-                <Deputy key={d.id} deputy={d} />
+                <Deputy
+                  key={d.id}
+                  deputy={d}
+                  isSaved={savedDeputyId === d.id}
+                  onPick={onPickDeputy}
+                />
               ))}
             </ul>
           </div>
