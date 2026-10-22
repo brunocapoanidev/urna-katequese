@@ -61,39 +61,934 @@ input { font: inherit; padding: 13px; border-radius: 10px; border: 1px solid #c9
 .rank-row.win .rank-bar i { background: var(--accent); }
 .rank-row b { min-width: 2ch; text-align: right; }
 
-/* ---- urna ---- */
-.ballot { min-height: 100vh; min-height: 100dvh; background: linear-gradient(160deg, var(--navy-2), #0b1424); padding: 20px 16px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
-.ballot-top { color: #fff; display: flex; justify-content: space-between; gap: 12px; width: 100%; max-width: 880px; margin: 0 auto; font-size: 0.78rem; letter-spacing: 0.08em; }
-.machine { width: 100%; max-width: 880px; margin: 0 auto; background: #d9d7d0; border-radius: 14px; padding: 22px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
-.screen { display: flex; flex-direction: column; gap: 6px; min-height: 400px; background: #dce4d6; border: 10px solid #111; padding: 18px; color: #111; }
-.cargo { font-size: 0.75rem; }
-.screen h2 { font-size: 1.4rem; font-weight: 800; }
-.number { display: flex; gap: 8px; margin-top: 4px; }
-.number span { width: 46px; height: 58px; border-bottom: 3px solid #333; font: 500 2.6rem/58px 'DM Mono', monospace; text-align: center; }
-.candidate { display: flex; align-items: flex-start; gap: 14px; margin-top: 14px; }
-.candidate-info { display: grid; gap: 4px; min-width: 0; flex: 1; overflow-wrap: anywhere; }
-.candidate-info strong { font-size: 1.5rem; line-height: 1.15; }
-.candidate-photo { flex: none; width: 104px; height: 104px; border: 3px solid #111; background-color: #ddd; background-repeat: no-repeat; background-size: auto 100%; }
-.instruction { margin-top: 16px; font-weight: 700; }
-.instruction.warn { color: var(--danger); }
-.review { margin-top: auto; border-top: 1px solid #333; padding-top: 10px; font-size: 0.8rem; }
-.keys { background: #2a2f3a; padding: 14px; border-radius: 6px; display: grid; gap: 14px; align-content: start; }
-.digits, .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.key { min-height: 58px; border: 0; border-radius: 4px; background: #171717; color: #fff; box-shadow: 0 3px #000; font: 500 22px 'DM Mono', monospace; cursor: pointer; }
-.key-zero { grid-column: 2; }
-.key:active, .act:active { transform: translateY(2px); box-shadow: none; }
-.act { min-height: 54px; border: 0; border-radius: 4px; font: 800 0.72rem 'Archivo', system-ui, sans-serif; color: #111; cursor: pointer; box-shadow: 0 3px rgba(0, 0, 0, 0.5); }
-.act:disabled { opacity: 0.6; }
-.white { background: #f0f0f0; }
-.orange { background: #ec9f28; }
-.green { background: #55a952; color: #062306; }
+/* ---- urna eletrônica (padrão TSE) ---- */
+@keyframes urna-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
 
-@media (max-width: 640px) {
-  .card, .card.wide { margin: 0; min-height: 100vh; border-radius: 0; border-left: 0; border-right: 0; box-shadow: none; padding: 24px 20px; }
-  .ballot { padding: 12px 10px; justify-content: flex-start; }
-  .ballot-top { font-size: 0.62rem; }
-  .machine { grid-template-columns: 1fr; padding: 12px; gap: 14px; }
-  .screen { min-height: 340px; }
-  .candidate-photo { width: 88px; height: 88px; }
-  .number span { width: 40px; }
+@keyframes urna-recording {
+  from { width: 6%; }
+  to { width: 100%; }
+}
+
+.ballot {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 50% 18%, #1d3358 0%, #0d192b 65%, #070e1a 100%);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.ballot-top {
+  color: #cbd5e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.ballot-top b { color: var(--accent); }
+
+/* Gabinete físico da urna */
+.machine {
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #ebe7dc 0%, #dcd6c6 55%, #cbc3b0 100%);
+  border: 2px solid #f5f2e9;
+  border-bottom-color: #a9a18e;
+  border-right-color: #b7af9c;
+  border-radius: 18px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: 1.48fr 1fr;
+  gap: 24px;
+  box-shadow:
+    0 28px 65px rgba(0, 0, 0, 0.6),
+    inset 0 2px 3px rgba(255, 255, 255, 0.75),
+    inset 0 -6px 12px rgba(92, 85, 70, 0.35);
+}
+
+.machine-done {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+}
+
+/* Moldura chanfrada (bezel) do monitor LCD */
+.screen-bezel {
+  background: linear-gradient(160deg, #b8b19f 0%, #cec8b8 100%);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow:
+    inset 0 4px 8px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.7);
+  display: flex;
+}
+
+/* Visor LCD oficial */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 430px;
+  background: linear-gradient(180deg, #eff3ec 0%, #e4ebe0 100%);
+  border: 3px solid #2b2e2a;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.12);
+  color: #111;
+  font-family: Arial, Helvetica, 'Archivo', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  padding: 16px 18px 10px;
+}
+
+.screen-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.voter-tag {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #444;
+  margin-bottom: 4px;
+}
+.voter-tag strong { color: #000; }
+
+.cargo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #111;
+}
+
+.cargo-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin: 6px 0 14px 36px;
+  color: #000;
+}
+
+/* Linha de Número + Caixas Retangulares com Cursor Piscante */
+.number-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.number-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  min-width: 62px;
+  visibility: hidden;
+}
+.number-label.is-visible {
+  visibility: visible;
+}
+
+.number {
+  display: flex;
+  gap: 6px;
+}
+
+.number-box {
+  width: 44px;
+  height: 56px;
+  border: 2px solid #111;
+  background: #f9fbf7;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+  font: 700 2.35rem/52px 'DM Mono', monospace;
+  text-align: center;
+  color: #000;
+  position: relative;
+  user-select: none;
+}
+
+.number-box.is-cursor::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 2px solid #111;
+  background: rgba(17, 17, 17, 0.12);
+  animation: urna-blink 0.95s step-end infinite;
+}
+
+/* Dados do Candidato (Nome, Partido, Chapa) */
+.candidate-details {
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px;
+}
+
+.detail-row dt {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.detail-row dd {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #000;
+  overflow-wrap: anywhere;
+}
+
+.detail-row dd.candidate-name {
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+/* Moldura da Foto 3x4 no Canto Superior Direito */
+.screen-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.candidate-frame {
+  margin: 0;
+  border: 2px solid #111;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+}
+
+.candidate-photo {
+  width: 118px;
+  height: 152px;
+  background-color: #dcdcdc;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+}
+
+.candidate-frame figcaption {
+  border-top: 1px solid #111;
+  background: #f5f5f5;
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 4px 6px;
+  text-transform: capitalize;
+}
+
+/* Voto em Branco e Voto Nulo */
+.vote-banner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 0;
+}
+
+.vote-banner strong {
+  font-size: clamp(1.7rem, 3.8vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
+.null-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.wrong-number {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.vote-null {
+  align-self: center;
+  font-size: clamp(1.75rem, 3.8vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+
+.blink-slow {
+  animation: urna-blink 1.15s step-end infinite;
+}
+
+.instruction {
+  margin-top: 10px;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+.instruction.warn {
+  color: var(--danger);
+}
+
+/* Rodapé Oficial separado por Linha Horizontal Preta */
+.screen-footer {
+  border-top: 2px solid #111;
+  padding: 8px 16px 10px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  background: rgba(255, 255, 255, 0.25);
+  visibility: hidden;
+}
+.screen-footer.is-visible {
+  visibility: visible;
+}
+
+.footer-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.footer-line {
+  padding-left: 18px;
+  font-weight: 600;
+}
+.footer-line b {
+  font-weight: 900;
+}
+
+/* Tela de GRAVANDO */
+.screen-recording {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.recording-box {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.recording-label {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.recording-bar {
+  width: 100%;
+  height: 24px;
+  border: 2px solid #111;
+  background: #fff;
+  padding: 2px;
+}
+
+.recording-bar i {
+  display: block;
+  height: 100%;
+  background: #1a7f37;
+  animation: urna-recording 0.48s linear forwards;
+}
+
+/* Tela Final FIM / VOTOU dentro do Visor */
+.screen-fim {
+  min-height: 360px;
+  padding: 24px 28px;
+}
+
+.fim-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fim-center h1 {
+  font-size: clamp(5rem, 16vw, 8.2rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #111;
+  line-height: 1;
+}
+
+.fim-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fim-note {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2c352d;
+}
+
+.fim-votou {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #6e756d;
+  letter-spacing: 0.04em;
+}
+
+.done-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Coluna Direita: Cabeçalho Justiça Eleitoral + Teclado Físico 3D */
+.terminal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.justice-header {
+  background: linear-gradient(180deg, #f7f4ec 0%, #e7e2d4 100%);
+  border: 1px solid #bfb8a6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #222;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.justice-coat {
+  flex: none;
+  color: #3a3832;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.justice-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.justice-title strong {
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+}
+
+.justice-title span {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #57534a;
+}
+
+/* Painel do Teclado */
+.keys {
+  flex: 1;
+  background: linear-gradient(180deg, #272b31 0%, #1b1e23 100%);
+  border: 2px solid #111317;
+  padding: 18px 16px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.digits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 11px 12px;
+}
+
+.key {
+  min-height: 54px;
+  padding: 6px 10px;
+  border: 1px solid #2e3238;
+  border-top-color: #464b53;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #22252a 0%, #121417 100%);
+  color: #fff;
+  box-shadow:
+    0 5px 0 #070809,
+    0 6px 8px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+.key-num {
+  font: 700 1.45rem/1 'DM Mono', monospace;
+}
+
+.key-braille {
+  font-size: 0.72rem;
+  color: #7c8492;
+  letter-spacing: -0.04em;
+}
+
+.key-zero {
+  grid-column: 2;
+}
+
+.key:hover {
+  background: linear-gradient(180deg, #2a2e34 0%, #171a1e 100%);
+}
+
+.key:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #070809;
+}
+
+/* Teclas BRANCO, CORRIGE e CONFIRMA (com CONFIRMA mais alto igual à urna real) */
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.12fr;
+  align-items: end;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.act {
+  min-height: 50px;
+  padding: 8px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.55);
+  border-radius: 5px;
+  font: 900 0.74rem/1.1 'Archivo', system-ui, sans-serif;
+  letter-spacing: 0.03em;
+  color: #111;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+.act:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.act.white {
+  background: linear-gradient(180deg, #fbfbfa 0%, #dedede 100%);
+  box-shadow: 0 5px 0 #8f8f8f, 0 6px 8px rgba(0, 0, 0, 0.45);
+}
+
+.act.orange {
+  background: linear-gradient(180deg, #f77f2f 0%, #d95d12 100%);
+  box-shadow: 0 5px 0 #7c3105, 0 6px 8px rgba(0, 0, 0, 0.45);
+}
+
+.act.green {
+  min-height: 66px;
+  align-items: center;
+  padding-top: 8px;
+  font-size: 0.8rem;
+  background: linear-gradient(180deg, #35b257 0%, #21883d 100%);
+  color: #071f0d;
+  box-shadow: 0 5px 0 #104d20, 0 6px 8px rgba(0, 0, 0, 0.45);
+}
+
+.act:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 780px) {
+  .card, .card.wide {
+    margin: 0;
+    min-height: 100vh;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: none;
+    padding: 24px 20px;
+  }
+  .ballot {
+    padding: 10px 8px;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .ballot-top {
+    font-size: 0.62rem;
+    padding: 0 2px;
+  }
+  .machine {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+  .screen-bezel {
+    padding: 7px;
+  }
+  .screen {
+    min-height: 295px;
+  }
+  .screen-main {
+    padding: 12px 12px 8px;
+    gap: 10px;
+  }
+  .cargo {
+    font-size: 0.74rem;
+  }
+  .cargo-title {
+    font-size: 1.3rem;
+    margin: 2px 0 8px 14px;
+  }
+  .number-row {
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .number-label {
+    font-size: 0.82rem;
+    min-width: 50px;
+  }
+  .number-box {
+    width: 36px;
+    height: 46px;
+    font-size: 1.85rem;
+    line-height: 42px;
+  }
+  .detail-row {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 6px;
+  }
+  .detail-row dt {
+    font-size: 0.82rem;
+  }
+  .detail-row dd {
+    font-size: 0.9rem;
+  }
+  .detail-row dd.candidate-name {
+    font-size: 1.08rem;
+  }
+  .candidate-photo {
+    width: 86px;
+    height: 112px;
+  }
+  .screen-footer {
+    padding: 6px 12px 8px;
+    font-size: 0.74rem;
+  }
+  .justice-header {
+    padding: 7px 12px;
+  }
+  .justice-title strong {
+    font-size: 0.84rem;
+  }
+  .keys {
+    padding: 12px;
+    gap: 12px;
+  }
+  .digits {
+    gap: 8px 10px;
+  }
+  .key {
+    min-height: 46px;
+    padding: 4px 10px;
+  }
+  .key-num {
+    font-size: 1.25rem;
+  }
+  .act {
+    min-height: 46px;
+    font-size: 0.7rem;
+  }
+  .act.green {
+    min-height: 56px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ---- Terminal de Login JEK, Colinha na Urna e Comprovante Oficial JEK ---- */
+.jek-terminal-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 50% 15%, #1d3358 0%, #0d192b 70%, #070e1a 100%);
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jek-login-card {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
+  border-top: 5px solid var(--accent);
+}
+
+.jek-login-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.jek-zone-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--paper);
+  color: var(--navy);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.jek-crest-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.jek-crest {
+  width: 52px;
+  height: 52px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  flex: none;
+  box-shadow: 0 6px 16px rgba(242, 183, 5, 0.3);
+}
+
+.jek-login-colinha {
+  background: var(--paper);
+  border: 1px dashed #b9b2a0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.84rem;
+}
+.jek-login-colinha div {
+  display: flex;
+  gap: 10px;
+}
+.jek-login-colinha b {
+  background: var(--navy);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.jek-security-seal {
+  background: #f3f1ea;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* Fita da Colinha na Urna */
+.urna-colinha-strip {
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto;
+  background: rgba(242, 183, 5, 0.14);
+  border: 1px solid rgba(242, 183, 5, 0.45);
+  color: #f6f4ee;
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  font-size: 0.82rem;
+}
+.urna-colinha-strip strong {
+  background: var(--accent);
+  color: var(--navy);
+  padding: 1px 7px;
+  border-radius: 5px;
+  font-weight: 900;
+}
+
+.voter-tag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.round-screen-tag {
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  background: #111;
+  color: #eff3ec;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* Comprovante Oficial de Comparecimento JEK */
+.jek-receipt {
+  background: #fdfcf8;
+  border: 2px dashed #9d9684;
+  border-radius: 14px;
+  padding: 20px;
+  color: var(--navy);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.jek-receipt-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #dfdad0;
+}
+
+.jek-receipt-seal {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--navy);
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.jek-receipt-head > div {
+  flex: 1;
+  min-width: 180px;
+}
+
+.jek-receipt-kicker {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.jek-receipt-head h2 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.jek-receipt-stamp {
+  background: #e4f2e8;
+  color: var(--ok);
+  border: 2px solid var(--ok);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.jek-receipt-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.jek-receipt-grid > div {
+  background: #f4f1e8;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.jek-receipt-grid > div.wide {
+  grid-column: 1 / -1;
+}
+
+.jek-receipt-grid dt {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.jek-receipt-grid dd {
+  margin: 2px 0 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.jek-protocol {
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.jek-receipt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jek-receipt-actions > * {
+  flex: 1 1 220px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jek-whatsapp-btn {
+  background: #1fa855;
+  color: #fff;
+}
+
+@media (max-width: 540px) {
+  .jek-receipt-grid {
+    grid-template-columns: 1fr;
+  }
 }

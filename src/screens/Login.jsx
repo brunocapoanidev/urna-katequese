@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { api } from '../api.js';
+import { useColinha } from '../colinha.js';
 
 const TEST_CODE = 'CATEQUESE-2026-TESTE';
 
-export default function Login({ onLogin, onBack, preview = false }) {
-  const [code, setCode] = useState('');
+export default function Login({ onLogin, onBack, preview = false, round = 1, initialCode = '' }) {
+  const [code, setCode] = useState(initialCode);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const { colinha } = useColinha();
 
   async function submit(e) {
     e.preventDefault();
@@ -17,7 +19,10 @@ export default function Login({ onLogin, onBack, preview = false }) {
       onLogin(preview ? { token: 'preview-hidden', name: result.name } : result);
     } catch (err) {
       if (import.meta.env.DEV && !err.status) {
-        onLogin({ token: code === TEST_CODE ? 'preview-admin' : 'preview', name: code === TEST_CODE ? 'Teste Catequese 2026' : 'Eleitor' });
+        onLogin({
+          token: code === TEST_CODE ? 'preview-admin' : 'preview',
+          name: code === TEST_CODE ? 'Teste Catequese 2026' : 'Eleitor',
+        });
       } else {
         setError(err.message);
       }
@@ -27,21 +32,60 @@ export default function Login({ onLogin, onBack, preview = false }) {
   }
 
   return (
-    <main className="card">
-      <button type="button" className="back" onClick={onBack}>← Voltar</button>
-      <div className="brand-mark" aria-hidden="true">✓</div>
-      <p className="eyebrow">Votações do Grupo Katequese · 2026</p>
-      <h1>Digite seu código para votar</h1>
-      <p className="lead">Use o código individual secreto que o grupo enviou para você.</p>
-      <form onSubmit={submit}>
-        <label>
-          Código individual secreto
-          <input value={code} onChange={e => setCode(e.target.value)} autoComplete="off" autoCapitalize="characters" spellCheck="false" required />
-        </label>
-        {error && <p className="error" role="alert">{error}</p>}
-        <button className="btn btn-primary" disabled={busy}>{busy ? 'Validando...' : 'Entrar para votar'}</button>
-      </form>
-      <small className="fine">Eleição privada do grupo. O voto é secreto e só pode ser dado uma vez.</small>
+    <main className="jek-terminal-page">
+      <section className="card jek-login-card">
+        <div className="jek-login-top">
+          <button type="button" className="back" onClick={onBack}>← Voltar ao site</button>
+          <span className="jek-zone-pill">Zona 001 · Seção Katequese</span>
+        </div>
+
+        <div className="jek-crest-row">
+          <div className="brand-mark jek-crest" aria-hidden="true">JEK</div>
+          <div>
+            <p className="eyebrow">Justiça Eleitoral Katequista · {round}º Turno</p>
+            <h1>Terminal do Mesário</h1>
+          </div>
+        </div>
+
+        <p className="lead">
+          {preview
+            ? 'Modo de Simulação da JEK: digite seu código individual para testar a urna.'
+            : `Identifique-se com seu código individual secreto para habilitar a Urna Eletrônica no ${round}º Turno.`}
+        </p>
+
+        {(colinha.president || colinha.deputy) && (
+          <div className="jek-login-colinha">
+            <span>📋 Sua Colinha salva para a urna:</span>
+            <div>
+              {colinha.president && <b>Pres: {colinha.president.number}</b>}
+              {round === 1 && colinha.deputy && <b>Dep: {colinha.deputy.number}</b>}
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={submit}>
+          <label>
+            Código Individual de Habilitação (e-Título JEK)
+            <input
+              value={code}
+              onChange={e => setCode(e.target.value)}
+              placeholder="Ex.: XXXX-XXXX"
+              autoComplete="off"
+              autoCapitalize="characters"
+              spellCheck="false"
+              required
+            />
+          </label>
+          {error && <p className="error" role="alert">{error}</p>}
+          <button className="btn btn-primary" disabled={busy}>
+            {busy ? 'Habilitando Urna Eletrônica...' : `Habilitar Urna · ${round}º Turno`}
+          </button>
+        </form>
+
+        <div className="jek-security-seal">
+          <span>🔒 Sigilo Constitucional Katequista: seu código apenas libera a cabine e nunca é vinculado ao seu voto.</span>
+        </div>
+      </section>
     </main>
   );
 }
