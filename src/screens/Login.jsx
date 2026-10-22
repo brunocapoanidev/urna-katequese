@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { api } from '../api.js';
 
-const TEST_NAME = 'teste catequese 2026';
 const TEST_CODE = 'CATEQUESE-2026-TESTE';
 
-export default function Login({ onLogin, onBack }) {
-  const [name, setName] = useState('');
+export default function Login({ onLogin, onBack, preview = false }) {
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -15,11 +13,11 @@ export default function Login({ onLogin, onBack }) {
     setBusy(true);
     setError('');
     try {
-      onLogin((await api('auth', { name, code })).token);
+      const result = await api('auth', { code, preview });
+      onLogin(preview ? { token: 'preview-hidden', name: result.name } : result);
     } catch (err) {
-      // Só no `npm run dev` (sem Functions): entra em modo de demonstração.
       if (import.meta.env.DEV && !err.status) {
-        onLogin(name.trim().toLowerCase() === TEST_NAME && code === TEST_CODE ? 'preview-admin' : 'preview');
+        onLogin({ token: code === TEST_CODE ? 'preview-admin' : 'preview', name: code === TEST_CODE ? 'Teste Catequese 2026' : 'Eleitor' });
       } else {
         setError(err.message);
       }
@@ -33,13 +31,9 @@ export default function Login({ onLogin, onBack }) {
       <button type="button" className="back" onClick={onBack}>← Voltar</button>
       <div className="brand-mark" aria-hidden="true">✓</div>
       <p className="eyebrow">Votações do Grupo Katequese · 2026</p>
-      <h1>Identifique-se para votar</h1>
-      <p className="lead">Use seu nome e o código individual que o grupo enviou para você.</p>
+      <h1>Digite seu código para votar</h1>
+      <p className="lead">Use o código individual secreto que o grupo enviou para você.</p>
       <form onSubmit={submit}>
-        <label>
-          Seu nome
-          <input value={name} onChange={e => setName(e.target.value)} autoComplete="off" autoCapitalize="words" required />
-        </label>
         <label>
           Código individual secreto
           <input value={code} onChange={e => setCode(e.target.value)} autoComplete="off" autoCapitalize="characters" spellCheck="false" required />

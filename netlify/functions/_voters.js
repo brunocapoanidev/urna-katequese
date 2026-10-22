@@ -23,6 +23,13 @@ export function findVoter(voters, name, code) {
   return match ?? null;
 }
 
+/** Identifica o eleitor apenas pelo código individual secreto. */
+export function findVoterByCode(voters, code) {
+  const c = normCode(code);
+  if (c.length < MIN_CODE_LENGTH) return null;
+  return voters.find(v => normCode(v.code).length >= MIN_CODE_LENGTH && safeEqual(normCode(v.code), c)) ?? null;
+}
+
 /** Lista de eleitores vinda da variável de ambiente VOTERS_JSON (ou null se não houver/for inválida). */
 export function votersFromEnv(raw = process.env.VOTERS_JSON) {
   try {

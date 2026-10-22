@@ -12,6 +12,8 @@ export default function App() {
   const [data, setData] = useState();
   const [skew, setSkew] = useState(0);
   const [token, setToken] = useState();
+  const [voterName, setVoterName] = useState('');
+  const [previewLogin, setPreviewLogin] = useState(false);
   const [wantsLogin, setWantsLogin] = useState(false);
   const [done, setDone] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -47,6 +49,8 @@ export default function App() {
 
   const home = () => {
     setToken(undefined);
+    setVoterName('');
+    setPreviewLogin(false);
     setWantsLogin(false);
     setDone(false);
     setShowResults(false);
@@ -55,13 +59,14 @@ export default function App() {
 
   if (!data) return <p className="loading">Carregando…</p>;
   if (showResults) return <PreviewResults onBack={() => setShowResults(false)} />;
-  if (done) return <Done previewAdmin={token === 'preview-admin'} onResults={() => setShowResults(true)} onHome={home} />;
+  if (done) return <Done preview={token?.startsWith('preview')} previewAdmin={token === 'preview-admin'} onResults={() => setShowResults(true)} onHome={home} />;
 
   if (token) {
     return (
       <Urna
         token={token}
         data={data}
+        voterName={voterName}
         onDone={vote => {
           if (vote && token === 'preview-admin') savePreviewVote(vote);
           setDone(true);
@@ -70,7 +75,7 @@ export default function App() {
     );
   }
 
-  if (wantsLogin) return <Login onLogin={setToken} onBack={() => setWantsLogin(false)} />;
+  if (wantsLogin) return <Login preview={previewLogin} onLogin={({ token: nextToken, name }) => { setToken(nextToken); setVoterName(name); }} onBack={() => { setWantsLogin(false); setPreviewLogin(false); }} />;
 
   return (
     <Landing
@@ -80,6 +85,12 @@ export default function App() {
       skew={skew}
       onVote={() => {
         setWantsLogin(true);
+        window.scrollTo(0, 0);
+      }}
+      onPreview={() => {
+        setPreviewLogin(true);
+        setWantsLogin(true);
+        setVoterName('Simulação');
         window.scrollTo(0, 0);
       }}
     />

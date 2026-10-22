@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import './landing.css';
 import CandidateCard from './CandidateCard.jsx';
 import PosterCarousel from './PosterCarousel.jsx';
@@ -17,12 +18,22 @@ const STATUS_LABEL = { scheduled: 'Votação em breve', open: 'Votação aberta'
 
 const byNumber = (a, b) => a.number.localeCompare(b.number, 'pt-BR', { numeric: true });
 
-export default function Landing({ presidents, deputies, config, skew = 0, onVote }) {
+export default function Landing({ presidents, deputies, config, skew = 0, onVote, onPreview }) {
+  const previewClicks = useRef(0);
   const ordered = [...presidents].sort(byNumber);
   // Sem servidor (npm run dev) não há config: a tela inicial libera o botão para testar.
   const status = config?.status ?? 'open';
   const label = config && STATUS_LABEL[status];
   const canVote = status === 'open';
+  const voteAction = () => {
+    if (canVote) return onVote();
+    if (status !== 'scheduled') return;
+    previewClicks.current += 1;
+    if (previewClicks.current === 20) {
+      previewClicks.current = 0;
+      onPreview();
+    }
+  };
   const period = config?.opensAt && config?.closesAt ? `${whenShort(config.opensAt)} até ${whenShort(config.closesAt)}` : VOTING_WINDOW;
   const voteLabel = status === 'scheduled' ? 'A votação ainda não abriu' : 'Votação encerrada';
   const posters = ordered.flatMap(p => (p.posters || []).map(x => ({ ...x, label: `${p.name} · ${p.number}` })));
@@ -45,7 +56,7 @@ export default function Landing({ presidents, deputies, config, skew = 0, onVote
           <nav aria-label="Principal" className="lp-nav">
             <a href="#candidatos" className="lp-nav-link">Candidatos</a>
             <a href="#como-votar" className="lp-nav-link">Como votar</a>
-            <button type="button" className="lp-pill" onClick={onVote} disabled={!canVote}>{canVote ? 'Votar agora' : label}</button>
+            <button type="button" className="lp-pill" onClick={voteAction} disabled={status === 'closed'}>{canVote ? 'Votar agora' : label}</button>
           </nav>
         </div>
       </header>
@@ -69,7 +80,7 @@ export default function Landing({ presidents, deputies, config, skew = 0, onVote
             )}
             {status === 'open' && config?.closesAt && <Countdown target={config.closesAt} skew={skew} label="A votação encerra em" />}
             <div className="lp-actions">
-              <button type="button" className="lp-btn lp-btn-primary" onClick={onVote} disabled={!canVote}>
+              <button type="button" className="lp-btn lp-btn-primary" onClick={voteAction} disabled={status === 'closed'}>
                 {canVote ? 'Ir para a votação' : voteLabel}
                 {canVote && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
               </button>
@@ -147,7 +158,7 @@ export default function Landing({ presidents, deputies, config, skew = 0, onVote
       <section className="lp-cta">
         <div className="lp-wrap lp-cta-inner">
           <h2>Pronto para votar?</h2>
-          <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={onVote} disabled={!canVote}>{canVote ? 'Votar agora' : voteLabel}</button>
+          <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={voteAction} disabled={status === 'closed'}>{canVote ? 'Votar agora' : voteLabel}</button>
           <small>Simulação privada, não é um sistema oficial do governo.</small>
         </div>
       </section>

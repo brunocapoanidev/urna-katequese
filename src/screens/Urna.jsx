@@ -9,7 +9,7 @@ const STAGES = {
   deputy: { title: 'DEPUTADO', list: d => d.deputies },
 };
 
-export default function Urna({ token, data, onDone }) {
+export default function Urna({ token, data, voterName, onDone }) {
   const [stage, setStage] = useState('president');
   const [digits, setDigits] = useState('');
   const [blank, setBlank] = useState(false);
@@ -75,6 +75,7 @@ export default function Urna({ token, data, onDone }) {
 
       <section className="machine">
         <div className="screen" aria-live="polite">
+          {voterName && <p className="eyebrow">Olá, {voterName}! Bem-vindo para a votação.</p>}
           <p className="cargo">SEU VOTO PARA</p>
           <h2>{STAGES[stage].title}</h2>
           <div className="number" aria-label={`Número digitado: ${digits || 'nenhum'}`}>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { findVoter, normName, normCode, votersFromEnv } from '../netlify/functions/_voters.js';
+import { findVoter, findVoterByCode, normName, normCode, votersFromEnv } from '../netlify/functions/_voters.js';
 
 const voters = [
   { id: 'joao-pedro', name: 'João Pedro', code: 'K7M4-9QDX' },
@@ -9,6 +9,11 @@ const voters = [
 ];
 
 describe('login do eleitor', () => {
+  it('identifica o eleitor somente pelo código', () => {
+    expect(findVoterByCode(voters, 'k7m4 9qdx')?.id).toBe('joao-pedro');
+    expect(findVoterByCode(voters, 'ABCD-2345')?.id).toBe('pedro');
+  });
+
   it('ignora caixa, acento e espaços sobrando no nome', () => {
     expect(normName('  JOAO   pedro ')).toBe('joao pedro');
     expect(findVoter(voters, 'joao pedro', 'K7M4-9QDX')?.id).toBe('joao-pedro');
