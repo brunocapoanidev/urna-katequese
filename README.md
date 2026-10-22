@@ -97,7 +97,7 @@ Desempate: menor número eleitoral. Presidente: o mais votado. Deputados: os tr�
 
 - O eleitor agora entra somente com o código individual. A urna identifica o nome automaticamente e mostra uma mensagem de boas-vindas antes de votar.
 - Os códigos e a senha de admin não ficam no Git: estão em `.env` no computador local e devem ser cadastrados como variáveis no Netlify antes da publicação. Não copiar esses segredos para este README.
-- A lista atual de eleitores definida localmente é: Bruno, Anderson, Arthur, Pietro, Gregory, Guilherme, João Pedro, Caio, Pedro, Jhonder, Paulo, Jean, Thiago Venturini, Thiago Dalri, Diego, Eduardo, Erick, Gustavo Daniel e Wesley.
+- A lista atual de eleitores definida localmente é: Bruno, Anderson, Arthur, Pietro, Gregory, Guilherme, João Pedro, Kayo, Pedro, Jhonder, Paulo, Jean, Thiago Venturini, Tiago Darli Muller, Diego, Eduardo, Erick, Gustavo Daniel e Wesley.
 - O deputado Anderson (3869) foi incluído, aliado ao Pedro Galli, com foto em `public/candidates/anderson.jpg`.
 - A eleição está em modo automático: abre em **24/10/2026, às 15h (Brasília)** e encerra em **25/10/2026, às 17h**. O painel `/admin` permite alterar ou sobrepor isso manualmente.
 - Enquanto a votação estiver agendada, 20 cliques em um botão de votação abrem uma **simulação**. Ela pede um código válido, mostra o nome e abre a urna, mas não cria participação, não grava voto e não entra na apuração.

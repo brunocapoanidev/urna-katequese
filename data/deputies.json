@@ -5,23 +5,56 @@
     "number": "4518",
     "presidentId": "bruno-capoani",
     "photo": "/candidates/deputados.png",
-    "photoPosition": "0%"
+    "photoPosition": "0%",
+    "slogan": "Mais fé, mais amizade, um grupo ainda melhor.",
+    "proposals": [
+      {
+        "title": "Integração e Presença Total",
+        "text": "Mobilizar a galera para ninguém ficar de fora dos passeios, viagens e encontros marcados pelo grupo."
+      },
+      {
+        "title": "Grupo Mais Ativo e Organizado",
+        "text": "Ajudar a destravar as votações de datas no WhatsApp e manter a comunicação ativa sem enrolação."
+      }
+    ]
   },
   {
     "id": "tigas",
     "name": "Tigas",
-    "number": "5138",
+    "number": "3851",
     "presidentId": "pedro-galli",
     "photo": "/candidates/tigas-kayo.png",
     "photoPosition": "0%",
-    "photoSize": "200% 100%"
+    "photoSize": "200% 100%",
+    "slogan": "Vai ter churrasco, cerveja e mais rolês aleatórios!",
+    "proposals": [
+      {
+        "title": "Fiscalização do Compromisso Grupal",
+        "text": "Atuar como Deputado Grupal cobrando o cumprimento das promessas da chapa e quem só aparece quando tem comida."
+      },
+      {
+        "title": "Mais Futebol e Rolês no Mato",
+        "text": "Puxar a organização de partidas de futebol, churrascos e rolês aleatórios nos fins de semana."
+      }
+    ]
   },
   {
     "id": "anderson",
     "name": "Anderson",
     "number": "3869",
     "presidentId": "pedro-galli",
-    "photo": "/candidates/anderson.jpg"
+    "photo": "/candidates/anderson.jpg",
+    "slogan": "Parceria firme na organização e cobrança justa.",
+    "proposals": [
+      {
+        "title": "Calendário Oficial sem Desculpas",
+        "text": "Fiscalizar junto à presidência os eventos marcados para evitar desmarcações de última hora por preguiça."
+      },
+      {
+        "title": "Apoio de Bastidor nos Eventos",
+        "text": "Garantir que a logística de churrasco, auxílio-carvão e transporte saia do papel em todos os encontros."
+      }
+    ]
   },
   {
     "id": "gregory",
@@ -29,7 +62,22 @@
     "number": "4569",
     "presidentId": "bruno-capoani",
     "photo": "/candidates/deputados.png",
-    "photoPosition": "50%"
+    "photoPosition": "50%",
+    "slogan": "Fé, união e atitude por um grupo ainda melhor.",
+    "proposals": [
+      {
+        "title": "Churrascos, Pizza e Bebida Garantida",
+        "text": "Apoiar a organização dos churrascos do grupo com refri e cerveja liberada nos eventos e mais pizza nas reuniões."
+      },
+      {
+        "title": "Torneios de Futebol e Games",
+        "text": "Organizar campeonatos internos de futebol e torneios de games para movimentar e integrar toda a galera."
+      },
+      {
+        "title": "Camisetas Exclusivas e Som nos Eventos",
+        "text": "Viabilizar camisetas exclusivas do grupo e garantir som automotivo e estrutura nas confraternizações."
+      }
+    ]
   },
   {
     "id": "kayo",
@@ -38,7 +86,18 @@
     "presidentId": "pietro-spielmann",
     "photo": "/candidates/tigas-kayo.png",
     "photoPosition": "100%",
-    "photoSize": "200% 100%"
+    "photoSize": "200% 100%",
+    "slogan": "Mais resenha, mais amizade, mais Katequese!",
+    "proposals": [
+      {
+        "title": "Fim dos Fins de Semana Parados",
+        "text": "Levantar opções de rolês e encontros para ninguém ficar em casa sem programação no fim de semana."
+      },
+      {
+        "title": "União e Parceria na Chapa",
+        "text": "Trabalhar junto à presidência para manter a galera próxima, animada e zero brigas no grupo."
+      }
+    ]
   },
   {
     "id": "diego",
@@ -46,6 +105,17 @@
     "number": "1069",
     "presidentId": "pietro-spielmann",
     "photo": "/candidates/deputados.png",
-    "photoPosition": "100%"
+    "photoPosition": "100%",
+    "slogan": "Presença e parceria em cada encontro.",
+    "proposals": [
+      {
+        "title": "Apoio aos Encontros e Churrascos",
+        "text": "Fortalecer a organização dos churrascos e encontros mensais do grupo com divisão justa e parceria."
+      },
+      {
+        "title": "Voz para Toda a Galera",
+        "text": "Garantir que todos os integrantes participem da escolha dos destinos, passeios e eventos do grupo."
+      }
+    ]
   }
 ]

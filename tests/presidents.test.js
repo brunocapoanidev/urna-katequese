@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import presidents from '../data/presidents.json';
 import deputies from '../data/deputies.json';
-import { formatDeputyLine } from '../src/landing/PartyProposals.jsx';
+import { formatDeputyLine, normalizeProposals } from '../src/landing/PartyProposals.jsx';
 
 describe('propostas dos partidos', () => {
   it('publica as cinco propostas do Partido Cuiudo', () => {
@@ -31,7 +31,7 @@ describe('propostas dos partidos', () => {
   });
 
   it('identifica os deputados da chapa de Pedro Galli', () => {
-    expect(formatDeputyLine(deputies, 'pedro-galli')).toBe('Tigas (5138) e Anderson (3869)');
+    expect(formatDeputyLine(deputies, 'pedro-galli')).toBe('Tigas (3851) e Anderson (3869)');
   });
 
   it('publica as cinco propostas do Partido Nacional da Katequese', () => {
@@ -48,5 +48,16 @@ describe('propostas dos partidos', () => {
       'Programa Mobilidade para Todos',
     ]);
     expect(bruno.proposals[0].text).toBe('Facilitar a organização dos encontros e estabelecer um calendário de eventos para o grupo. A proposta é diminuir a enrolação, definir datas com antecedência e garantir que os compromissos assumidos sejam cumpridos.');
+  });
+
+  it('mantém espaço e propostas estruturadas para os deputados de cada chapa', () => {
+    for (const deputy of deputies) {
+      const normalized = normalizeProposals(deputy.proposals);
+      expect(normalized.length).toBeGreaterThan(0);
+      for (const proposal of normalized) {
+        expect(proposal.title.trim()).not.toBe('');
+        expect(proposal.text.trim()).not.toBe('');
+      }
+    }
   });
 });

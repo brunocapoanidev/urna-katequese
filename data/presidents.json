@@ -60,6 +60,7 @@
     "id": "pedro-galli",
     "name": "Pedro Galli",
     "number": "38",
+    "slogan": "Menos política, mais trabalho e resenha!",
     "proposals": [
       {
         "title": "Reforma Administrativa dos encontros",
@@ -98,6 +99,21 @@
     "id": "pietro-spielmann",
     "name": "Pietro Spielmann",
     "number": "10",
+    "slogan": "Se é pra fazer história, vamos fazer resenha!",
+    "proposals": [
+      {
+        "title": "Meta de Rolês Mensais",
+        "text": "Aumentar a frequência de encontros para no mínimo um rolê garantido por mês, tendo comprometimento total com os amigos katequistas."
+      },
+      {
+        "title": "Zero Rolos entre Katequistas",
+        "text": "Diminuir os rolos e desentendimentos internos para 0%, mantendo o grupo sempre unido, parceiro e fortalecendo a amizade."
+      },
+      {
+        "title": "Mais Resenha, Menos Celular",
+        "text": "Promover mais fins de semana felizes, mais parceria e mais churrascos com presença real da galera — menos celular e mais convivência."
+      }
+    ],
     "party": "PRA — Partido Rolê e Amigos",
     "photo": "/candidates/presidentes.png",
     "photoPosition": "100%",

@@ -1,5 +1,10 @@
 [
   {
+    "id": "bruno",
+    "name": "Bruno",
+    "code": ""
+  },
+  {
     "id": "anderson",
     "name": "Anderson",
     "code": ""
@@ -10,8 +15,13 @@
     "code": ""
   },
   {
-    "id": "bruno",
-    "name": "Bruno",
+    "id": "pietro",
+    "name": "Pietro",
+    "code": ""
+  },
+  {
+    "id": "gregory",
+    "name": "Gregory",
     "code": ""
   },
   {
@@ -25,28 +35,8 @@
     "code": ""
   },
   {
-    "id": "jhonder",
-    "name": "Jhonder",
-    "code": ""
-  },
-  {
-    "id": "jean-lucca",
-    "name": "Jean Lucca",
-    "code": ""
-  },
-  {
     "id": "kayo",
     "name": "Kayo",
-    "code": ""
-  },
-  {
-    "id": "diego",
-    "name": "Diego",
-    "code": ""
-  },
-  {
-    "id": "wesley",
-    "name": "Wesley",
     "code": ""
   },
   {
@@ -55,8 +45,8 @@
     "code": ""
   },
   {
-    "id": "pietro",
-    "name": "Pietro",
+    "id": "jhonder",
+    "name": "Jhonder",
     "code": ""
   },
   {
@@ -65,18 +55,28 @@
     "code": ""
   },
   {
+    "id": "jean",
+    "name": "Jean",
+    "code": ""
+  },
+  {
+    "id": "thiago-venturini",
+    "name": "Thiago Venturini",
+    "code": ""
+  },
+  {
+    "id": "tiago-darli-muller",
+    "name": "Tiago Darli Muller",
+    "code": ""
+  },
+  {
+    "id": "diego",
+    "name": "Diego",
+    "code": ""
+  },
+  {
     "id": "eduardo",
     "name": "Eduardo",
-    "code": ""
-  },
-  {
-    "id": "tiago-muller",
-    "name": "Tiago Muller",
-    "code": ""
-  },
-  {
-    "id": "tiago-ventorini",
-    "name": "Tiago Ventorini",
     "code": ""
   },
   {
@@ -85,13 +85,13 @@
     "code": ""
   },
   {
-    "id": "gustavo",
-    "name": "Gustavo",
+    "id": "gustavo-daniel",
+    "name": "Gustavo Daniel",
     "code": ""
   },
   {
-    "id": "gregory",
-    "name": "Gregory",
+    "id": "wesley",
+    "name": "Wesley",
     "code": ""
   },
   {
