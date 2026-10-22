@@ -994,3 +994,14 @@ input { font: inherit; padding: 13px; border-radius: 10px; border: 1px solid #c9
     grid-template-columns: 1fr;
   }
 }
+.preview-presence { border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 10px; }
+.preview-presence-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.preview-presence-head h2 { font-size: 1.18rem; }
+.preview-presence-head > strong { background: var(--navy); color: var(--accent); border-radius: 999px; padding: 5px 10px; white-space: nowrap; }
+.preview-presence-list { display: grid; gap: 7px; max-height: 310px; overflow: auto; padding-right: 3px; }
+.preview-presence-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; font-size: 0.9rem; }
+.preview-presence-row > span { font-weight: 750; overflow-wrap: anywhere; }
+.preview-presence-status { border-radius: 999px; padding: 3px 8px; font-size: 0.72rem; white-space: nowrap; }
+.preview-presence-status.voted { background: #e4f2e8; color: #196437; }
+.preview-presence-status.pending { background: #fff1ce; color: #7a5200; }
+.preview-presence-status.missing { background: #eee9df; color: #625c52; }
